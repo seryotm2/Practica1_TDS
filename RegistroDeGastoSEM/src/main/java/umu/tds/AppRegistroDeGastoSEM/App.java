@@ -1,4 +1,4 @@
-package umu.tds.apps.RegistroDeGastoSEM;
+package umu.tds.AppRegistroDeGastoSEM;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
