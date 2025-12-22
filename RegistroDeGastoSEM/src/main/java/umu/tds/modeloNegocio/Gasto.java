@@ -3,7 +3,7 @@ package umu.tds.modeloNegocio;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Gasto {
+public class Gasto implements Comparable<Gasto>{
 	
 	private String concepto;
 	private double cantidad;
@@ -46,7 +46,7 @@ public class Gasto {
 	}
 	
 
-	public void setCategoría(String categoría) {
+	public void setCategoría(Categoria categoria) {
 		this.categoria = categoria;
 	}
 	
@@ -81,6 +81,15 @@ public class Gasto {
 		return Double.doubleToLongBits(cantidad) == Double.doubleToLongBits(other.cantidad)
 				&& Objects.equals(categoria, other.categoria) && Objects.equals(concepto, other.concepto)
 				&& Objects.equals(fecha, other.fecha);
+	}
+
+	@Override
+	public int compareTo(Gasto o) {
+		if(this.fecha.isAfter(o.fecha))
+			return 1;
+		if(this.fecha.isBefore(o.fecha))
+			return -1;
+		return 0;
 	}
 	
 	
