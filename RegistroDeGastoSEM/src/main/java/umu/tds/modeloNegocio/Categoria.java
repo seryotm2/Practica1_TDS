@@ -2,9 +2,14 @@ package umu.tds.modeloNegocio;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class Categoria {
 	
@@ -44,11 +49,95 @@ public class Categoria {
 		Gasto newGasto = new Gasto(cantidad, fecha);
 		newGasto.setUsuario(usuario);
 	    newGasto.setConcepto(concepto);
-		newGasto.setCategoría(this);
+		newGasto.setCategoria(this);
 		
-		if(gastos.add(newGasto))
+		if(gastos.add(newGasto)) {
+			//TODO Antes de sumar el gasto hay que ver si el usuario del gasto coincide con
+			 // el usuario por defecto, es decir, si el usauario del nuevo gasto es igual
+			 // a, por ejemplo, "Directorio.MY_USUARIO" sumar el gasto, si no, no se suma.
+			gastoTotal += newGasto.getCantidad();
 			return Optional.of(newGasto);
-		
+		}		
 		return Optional.empty();		
 	}
+
+	public int numGastos() {
+		return gastos.size();
+	}
+	
+	public boolean isEmpty() {
+		return numGastos() == 0;
+	}
+	
+	
+	/**
+	 * Retorna un objeto set con los gastos realizados entre el periodo de tiempo f1 y f2.
+	 * @param f1 fecha inferior del periodo. Debe ser menor o igual a f2 .
+	 * @param f2 fecha superior del periodo. Debe ser mayor o igual a f1.
+	 * @return un objeto set con los gastos realizados entre el periodo de tiempo f1 y f2.
+	 */
+	public Set<Gasto> getGastosEnPeriodo(LocalDate f1, LocalDate f2){
+		return gastos.stream()
+				.filter(g->g.realizadoEntre(f1, f2))
+				.collect(Collectors.toSet());
+	}
+	
+	/**
+	 * Retorna un objeto Set con los gastos que contengan en su concepto la subcadena subconcepto.
+	 * @param subconcepto subcadena que debe contener el Gasto.
+	 * @return un objeto set con los gastos que contengan la subcadena subconcepto.
+	 */
+	public Set<Gasto> getGastosConConcepto(String subconcepto){
+		return gastos.stream()
+				.filter(g->g.getConcepto().toLowerCase().contains(subconcepto.toLowerCase()))
+				.collect(Collectors.toSet());
+	}
+	
+	public Set<Gasto> getGastosConCatidad(double li, double ls){
+		return gastos.stream()
+				.filter(g->g.isCantidadEntre(li, ls))
+				.collect(Collectors.toSet());
+	}
+	
+	/*
+	 * Retorna Una lista con los últimos n gastos introducidos en esta categoria si los hay.
+	 * La lista puede estar vacía.
+	 * */
+	public List<Gasto> getUltimosNGastos(int n){
+		LinkedList<Gasto> list = new LinkedList<>();
+		Iterator<Gasto> it = gastos.descendingIterator();
+		for(int i=0; it.hasNext() && i < gastos.size() && i < n; i++) {
+			list.addLast(it.next());
+		}
+		return list;
+	}
+	
+	public boolean eliminarGasto(Gasto e) {
+		boolean resultado = gastos.remove(e);
+		if(resultado)
+			//TODO Antes de restar el gasto hay que ver si el usuario del gasto coincide con
+			 // el usuario por defecto, es decir, si el usauario del gasto es igual
+			 // a, por ejemplo, "Directorio.MY_USUARIO" restar el gasto, si no, no se suma.
+			this.gastoTotal -= e.getCantidad();
+		return resultado;
+	}
+	
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(nomCategoria);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Categoria other = (Categoria) obj;
+		return Objects.equals(nomCategoria, other.nomCategoria);
+	}
+	
 }

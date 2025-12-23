@@ -1,6 +1,9 @@
 package umu.tds.modeloNegocio;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.temporal.WeekFields;
+import java.util.Locale;
 import java.util.Objects;
 
 public class Gasto implements Comparable<Gasto>{
@@ -33,20 +36,17 @@ public class Gasto implements Comparable<Gasto>{
 		return fecha;
 	}
 	
-	/* De momento no necesario
-	public void setFecha(LocalDate fecha) {
+		public void setFecha(LocalDate fecha) {
 		this.fecha = fecha;
 	}
-	*/
-	/*todo: devolver una lista inmodificable. 
-	 * 
-	 * */
-	public Categoria getCategoría() {
+	
+	
+	public Categoria getCategoria() {
 		return categoria;
 	}
 	
 
-	public void setCategoría(Categoria categoria) {
+	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
 	}
 	
@@ -56,6 +56,38 @@ public class Gasto implements Comparable<Gasto>{
 	
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
+	}
+	
+	/**
+	 * Retorna true si el gasto fue realizado entre el periodo de tiempo f1 y f2, false en otro caso.
+	 * @param f1 fecha inferior del periodo. Debe ser menor o igual a f2 .
+	 * @param f2 fecha superior del periodo. Debe ser mayor o igual a f1.
+	 * @return true si el gasto está entre f1 y f2, false si no.
+	 */
+	public boolean realizadoEntre(LocalDate f1, LocalDate f2) {
+		return (this.fecha.isAfter(f1) || this.fecha.isEqual(f1)) &&
+				(this.fecha.isBefore(f2) || this.fecha.isEqual(f2));
+	}
+	
+	/**
+	 * Retorna true si el gasto fue realizado en esta semana. False en otro caso.
+	 */
+	public boolean realizadoEnEstaSemana() {
+		WeekFields semanaAct = WeekFields.of(Locale.getDefault());
+		
+		return fecha.get(semanaAct.weekOfWeekBasedYear()) ==  LocalDate.now().get(semanaAct.weekOfWeekBasedYear()) &&
+		        fecha.get(semanaAct.weekBasedYear()) == LocalDate.now().get(semanaAct.weekBasedYear());
+	}
+	
+	/**
+ 	 * Retorna true si el gasto fue realizado en este mes. False en otro caso.
+	 */
+	public boolean realizadoEnEsteMes() {
+		return YearMonth.from(fecha).equals(YearMonth.now());
+	}
+	
+	public boolean isCantidadEntre(double li, double ls) {
+		return this.cantidad >= li && this.cantidad <= ls;
 	}
 	
 	@Override
@@ -89,8 +121,11 @@ public class Gasto implements Comparable<Gasto>{
 			return 1;
 		if(this.fecha.isBefore(o.fecha))
 			return -1;
-		return 0;
+		int empate = ((Double)cantidad).compareTo(o.cantidad);
+		if(empate != 0)
+			return empate;
+		return concepto.compareTo(o.concepto);
 	}
-	
+
 	
 }
