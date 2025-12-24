@@ -143,6 +143,11 @@ public class LibroDeCuenta {
 		gastosDeLaSemana.add(gasto);		
 	}
 
+	/**
+	 * Añade gasto al conjunto de gastos de este mes. Se debe haber comprobado
+	 * que el gasto sí se realizó en la semana actual.
+	 * @param gasto a añadir.
+	 */
 	private void addIntoGastosDelMes(Gasto gasto) {
 		updateGastosDelMes();
 		gastosDelMes.add(gasto);
@@ -154,8 +159,9 @@ public class LibroDeCuenta {
 		return crearGasto(cantidad, fecha, usuario, concepto, GASTOS_GENERALES);
 	}
 	
-	/*
+	/**
 	 * Retorna los últimos n gastos creados si los hay. La lista puede estar vacía.
+	 * @param n Número de gastos solicitados.
 	 * */
 	public List<Gasto> getUltimosNGastos(int n){
 		
@@ -176,10 +182,14 @@ public class LibroDeCuenta {
 	
 	public boolean eliminarGasto(Gasto e) {
 		var catGasto = e.getCategoria();
-		if(!categorias.containsValue(catGasto))
+		if(!existeCategoria(catGasto))
 			return false;
 		boolean resultado = catGasto.eliminarGasto(e);
 		if(resultado)
+			if(gastosDeLaSemana.contains(e))
+				gastosDeLaSemana.remove(e);
+			if(gastosDelMes.contains(e))
+				gastosDelMes.remove(e);
 			//TODO Antes de restar el gasto hay que ver si el usuario del gasto coincide con
 			 // el usuario por defecto, es decir, si el usauario del gasto es igual
 			 // a, por ejemplo, "Directorio.MY_USUARIO" restar el gasto, si no, no se suma.
@@ -192,7 +202,50 @@ public class LibroDeCuenta {
 	}
 	
 	/**
-	 * TODO Crear las clases para las modificaciones. Falta la recuperación de datos desde el
+	 * Cambia de categoria un gasto. Retorna true en caso de exito o si el gasto
+	 * ya pertenecía a la categoría destino, false en caso de fallo. 
+	 * @param g Gasto a cambiar,
+	 * @param c Categoría destino.
+	 * @return Retorna true en caso de exito o si el gasto ya pertenecía a la categoría
+	 * destino, false en caso de fallo.
+	 */
+	public boolean cambiarGastoDeCategoria(Gasto g, Categoria c) {
+		if(!existeCategoria(c))
+			return false;
+		if(g.getCategoria().equals(c))
+			return true;
+		g.setCategoria(c);
+		return c.addGasto(g);
+	}
+	
+	/**
+	 * Cambia de categoria un gasto. Retorna true en caso de exito o si el gasto
+	 * ya pertenecía a la categoría destino, false en caso de fallo. 
+	 * @param g Gasto a cambiar,
+	 * @param c nombre de la categoría destino.
+	 * @return Retorna true en caso de exito o si el gasto ya pertenecía a la categoría
+	 * destino, false en caso de fallo.
+	 */
+	public boolean cambiarGastoDeCategoria(Gasto g, String c) {
+		if(!existeCategoria(c))
+			return false;
+		Categoria cat = this.categorias.get(c);
+		if(g.getCategoria().equals(cat))
+			return true;
+		g.setCategoria(cat);
+		return cat.addGasto(g);
+	}
+	
+	public void cambiarFechaDeGasto(Gasto g, LocalDate newFecha) {
+		g.setFecha(newFecha);
+		if(g.realizadoEnEsteMes())
+			addIntoGastosDelMes(g);
+		if(g.realizadoEnEstaSemana())
+			addIntoGastosDeLaSemana(g);
+	}
+	
+	/**
+	 * TODO Falta la recuperación de datos desde el
 	 * repositorio.
 	 */
 }

@@ -60,13 +60,22 @@ public class Categoria {
 		}		
 		return Optional.empty();		
 	}
+	
+	public boolean addGasto(Gasto g) {
+		if(!g.getCategoria().equals(this))
+			return false;
+		return gastos.add(g);
+	}
 
 	public int numGastos() {
 		return gastos.size();
 	}
 	
+	/**
+	 * @return True si la categoría está vacía.
+	 */
 	public boolean isEmpty() {
-		return numGastos() == 0;
+		return gastos.isEmpty();
 	}
 	
 	

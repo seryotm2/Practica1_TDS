@@ -36,7 +36,7 @@ public class Gasto implements Comparable<Gasto>{
 		return fecha;
 	}
 	
-		public void setFecha(LocalDate fecha) {
+	void setFecha(LocalDate fecha) {
 		this.fecha = fecha;
 	}
 	
@@ -46,9 +46,10 @@ public class Gasto implements Comparable<Gasto>{
 	}
 	
 
-	public void setCategoria(Categoria categoria) {
+	void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
 	}
+	
 	
 	public Usuario getUsuario() {
 		return usuario;
