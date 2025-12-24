@@ -12,6 +12,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import umu.tds.modeloNegocio.buscadores.BuscadorCategoria;
+
 public class LibroDeCuenta {
 	
 	static final public String GASTOS_GENERALES = "gastosGenerales";
@@ -41,6 +43,18 @@ public class LibroDeCuenta {
 
 	public double getGastoGlobal() {
 		return gastoGlobal;
+	}
+	
+	public double getGastoSemanal() {
+		updateGastosDeLaSemana();
+		return gastosDeLaSemana.stream()
+			.collect(Collectors.summingDouble(g-> g.getCantidad()));
+	}
+	
+	public double getGastoMensual() {
+		updateGastosDelMes();
+		return gastosDelMes.stream()
+			.collect(Collectors.summingDouble(g-> g.getCantidad()));
 	}
 
 	public Set<String> getNombresCategorias() {
@@ -173,8 +187,12 @@ public class LibroDeCuenta {
 		return resultado;
 	}
 	
+	public Set<Gasto> buscar(BuscadorCategoria buscador){
+		return buscador.buscar();
+	}
+	
 	/**
-	 * TODO Crear las clases para las busquedas y las modificaciones. Falta la recuperación de datos desde el
+	 * TODO Crear las clases para las modificaciones. Falta la recuperación de datos desde el
 	 * repositorio.
 	 */
 }
