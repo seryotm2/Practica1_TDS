@@ -1,6 +1,7 @@
 package umu.tds.modeloNegocio;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import umu.tds.controlador.AppControlGastos;
 import umu.tds.modeloNegocio.buscadores.BuscadorCategoria;
 
 public class LibroDeCuenta {
@@ -25,11 +27,15 @@ public class LibroDeCuenta {
 	HashMap<String,Categoria> categorias;
 	TreeSet<Gasto> gastosDeLaSemana, gastosDelMes;
 	
+	List<CuentaCompartida> cuentasCompartidas;	//por Sergio
+	
+	
 	private LibroDeCuenta() {
 		gastoGlobal = 0;
 		categorias = new HashMap<>();
 		gastosDeLaSemana = new TreeSet<>();
 		gastosDelMes = new TreeSet<>();
+		cuentasCompartidas = new ArrayList<>();
 		
 		// Siempre hay una catogoría por defecto que se asignará a los gastos sin categoría especificada.
 		categorias.put(GASTOS_GENERALES, new Categoria(GASTOS_GENERALES));
@@ -41,6 +47,60 @@ public class LibroDeCuenta {
 		return instancia;
 	}
 
+	
+	
+	
+	
+	
+	
+	//Por Sergio
+    
+    public void addCuentaCompartida(CuentaCompartida cuenta) {
+        cuentasCompartidas.add(cuenta);
+    }
+
+    public List<CuentaCompartida> getCuentasCompartidas() {
+        return Collections.unmodifiableList(cuentasCompartidas);
+    }
+    
+
+    public Optional<Gasto> crearGasto(double cantidad, LocalDate fecha, Usuario usuario, String concepto, String categoria) {        
+        
+        if(!existeCategoria(categoria))
+            return Optional.empty();
+        
+        // Creamos el gasto y lo añadimos a la categoría (siempre se añade a la categoría)
+        Optional<Gasto> newGastoOpt = categorias.get(categoria).addNewGasto(cantidad, fecha, usuario, concepto);
+         
+        if(newGastoOpt.isPresent()) {
+             Gasto newGasto = newGastoOpt.get();
+             
+             boolean esGastoPropio = usuario.equals(AppControlGastos.getInstancia().getUsuarioActual());
+
+             if (esGastoPropio) {
+                 gastoGlobal += newGasto.getCantidad();
+                 
+                 if(newGasto.realizadoEnEsteMes())
+                     addIntoGastosDelMes(newGasto);
+                 
+                 if(newGasto.realizadoEnEstaSemana())
+                     addIntoGastosDeLaSemana(newGasto);
+             }
+         }
+         return newGastoOpt;
+    }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public double getGastoGlobal() {
 		return gastoGlobal;
 	}
@@ -86,6 +146,8 @@ public class LibroDeCuenta {
 		return categorias.containsValue(c);
 	}
 	
+	
+	/*
 	public Optional<Gasto> crearGasto(double cantidad, LocalDate fecha, Usuario usuario,
 			String concepto, String categoria){		
 		if(!existeCategoria(categoria))
@@ -108,6 +170,7 @@ public class LibroDeCuenta {
 		 }
 		 return newGasto;
 	}
+	*/
 	
 	/**
 	 * Actualiza el conjunto de los gastos de esta semana.
@@ -184,16 +247,18 @@ public class LibroDeCuenta {
 		var catGasto = e.getCategoria();
 		if(!existeCategoria(catGasto))
 			return false;
+		
 		boolean resultado = catGasto.eliminarGasto(e);
-		if(resultado)
-			if(gastosDeLaSemana.contains(e))
-				gastosDeLaSemana.remove(e);
-			if(gastosDelMes.contains(e))
-				gastosDelMes.remove(e);
-			//TODO Antes de restar el gasto hay que ver si el usuario del gasto coincide con
-			 // el usuario por defecto, es decir, si el usauario del gasto es igual
-			 // a, por ejemplo, "Directorio.MY_USUARIO" restar el gasto, si no, no se suma.
-			gastoGlobal -= e.getCantidad();
+		if(resultado) {
+			boolean esGastoPropio = e.getUsuario().equals(AppControlGastos.getInstancia().getUsuarioActual());
+			if(esGastoPropio) {
+				if(gastosDeLaSemana.contains(e))
+					gastosDeLaSemana.remove(e);
+				if(gastosDelMes.contains(e))
+					gastosDelMes.remove(e);
+				gastoGlobal -= e.getCantidad();
+			}
+		}
 		return resultado;
 	}
 	
