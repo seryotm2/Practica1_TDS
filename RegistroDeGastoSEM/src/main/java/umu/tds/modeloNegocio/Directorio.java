@@ -35,7 +35,7 @@ public class Directorio {
     }
 
     /**
-     * Devuelve el usuario principal (Dueño) que siempre existe.
+     * Devuelve el usuario principal 
      */
     public static Usuario getUsuarioPropietario() {
         return usuarioPropietario;

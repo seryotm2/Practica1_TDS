@@ -40,8 +40,8 @@ public class AppControlGastos {
 
 
     /**
-     * Registra un gasto para el usuario principal (propietario).
-     * Si la categoría indicada no existe, se crea automáticamente.
+     * Registra un gasto para el usuario principal.
+     * Si la categoría indicada no existe, se crea automáticamente. CAMBIAR ESTO, LO DEJAREMOS COMO LISTA DESLIZANTE
      * @param concepto Descripción del gasto.
      * @param nombreCategoria Nombre de la categoría (ej: "Alimentación").
      * @param cantidad Importe del gasto.
@@ -84,11 +84,11 @@ public class AppControlGastos {
     
     /**
      * Registra un gasto dentro de una cuenta compartida.
-     * pero solo afectará al saldo global del usuario si él lo pagó.
+     * pero solo afectará al saldo global del usuario si el lo pagó.
      */
     public boolean registrarGastoCompartido(CuentaCompartida cuenta, String concepto, double cantidad, LocalDate fecha, Usuario pagador) {
         
-        // Por ahora usamos la genérica TODO
+        // Por ahora usamos la genérica TODO --------------------------------------------------------------------------------------------------------------
         String categoria = LibroDeCuenta.GASTOS_GENERALES; 
         
         // Crear el gasto

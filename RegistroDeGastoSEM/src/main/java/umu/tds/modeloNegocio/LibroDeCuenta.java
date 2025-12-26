@@ -69,7 +69,7 @@ public class LibroDeCuenta {
         if(!existeCategoria(categoria))
             return Optional.empty();
         
-        // Creamos el gasto y lo añadimos a la categoría (siempre se añade a la categoría)
+        // Creamos el gasto y lo añadimos a la categoría
         Optional<Gasto> newGastoOpt = categorias.get(categoria).addNewGasto(cantidad, fecha, usuario, concepto);
          
         if(newGastoOpt.isPresent()) {
