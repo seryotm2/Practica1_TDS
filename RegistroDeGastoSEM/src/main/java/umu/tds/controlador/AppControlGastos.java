@@ -41,7 +41,7 @@ public class AppControlGastos {
 
     /**
      * Registra un gasto para el usuario principal.
-     * Si la categoría indicada no existe, se crea automáticamente. CAMBIAR ESTO, LO DEJAREMOS COMO LISTA DESLIZANTE
+     * Si la categoría indicada no existe, se crea automáticamente. TODO: CAMBIAR ESTO, LO DEJAREMOS COMO LISTA DESLIZANTE
      * @param concepto Descripción del gasto.
      * @param nombreCategoria Nombre de la categoría (ej: "Alimentación").
      * @param cantidad Importe del gasto.
@@ -56,7 +56,7 @@ public class AppControlGastos {
         if (nombreCategoria == null || nombreCategoria.isBlank()) {  
             nombreCategoria = LibroDeCuenta.GASTOS_GENERALES;
         } else {
-            if (!libroDeCuenta.existeCategoria(nombreCategoria)) {	//mirar si creamos una nueva o lo ponemos como una lista deslizante
+            if (!libroDeCuenta.existeCategoria(nombreCategoria)) {	// TODO mirar si creamos una nueva o lo ponemos como una lista deslizante
                 boolean creada = libroDeCuenta.crearCategoria(nombreCategoria);
                 if (!creada) return false; 
             }

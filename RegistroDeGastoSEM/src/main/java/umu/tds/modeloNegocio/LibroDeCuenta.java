@@ -18,7 +18,7 @@ import umu.tds.modeloNegocio.buscadores.BuscadorCategoria;
 
 public class LibroDeCuenta {
 	
-	static final public String GASTOS_GENERALES = "gastosGenerales";
+	static final public String GASTOS_GENERALES = "Gastos Generales";
 	
 	// Objeto singleton
 	static private LibroDeCuenta instancia = null;
@@ -49,8 +49,20 @@ public class LibroDeCuenta {
 
 	
 	
-	
-	
+	/**
+	 * Busca en la lista de cuentas compartidas la cuenta que coincida con un nombre dado.
+	 * Si existe entonces regresa la cuenta.
+	 * @param nombreCuenta
+	 * @return Un objeto Obtional con la cuenta si la cuenta fue encontrada. Vacío en caso contrario.
+	 */
+	//TODO En caso de implementar otra forma de identificar las cuentas, por ejemplo, con un número
+	// de secuencia, haciendo que el nombre se pueda repetir en varias cuentas, hacer que este método
+	// devuelva una lista.
+	public Optional<CuentaCompartida> buscarCuenta(String nombreCuenta){
+		return this.cuentasCompartidas.stream()
+				.filter(cc -> nombreCuenta.equals(cc.getNombre()))
+				.findFirst();
+	}
 	
 	
 	//Por Sergio
@@ -64,7 +76,8 @@ public class LibroDeCuenta {
     }
     
 
-    public Optional<Gasto> crearGasto(double cantidad, LocalDate fecha, Usuario usuario, String concepto, String categoria) {        
+    public Optional<Gasto> crearGasto(double cantidad, LocalDate fecha, Usuario usuario,
+    		String concepto, String categoria) {        
         
         if(!existeCategoria(categoria))
             return Optional.empty();
@@ -145,32 +158,6 @@ public class LibroDeCuenta {
 	public boolean existeCategoria(Categoria c) {
 		return categorias.containsValue(c);
 	}
-	
-	
-	/*
-	public Optional<Gasto> crearGasto(double cantidad, LocalDate fecha, Usuario usuario,
-			String concepto, String categoria){		
-		if(!existeCategoria(categoria))
-			return Optional.empty();
-		
-		 Optional<Gasto> newGasto = categorias.get(categoria).addNewGasto(cantidad, fecha, usuario, concepto);
-		 if(newGasto.isPresent()) {
-			 //se incrementa la cantidad total de dinero gastado
-			 
-			 //TODO Antes de sumar el gasto hay que ver si el usuario del gasto coincide con
-			 // el usuario por defecto, es decir, si el usauario del nuevo gasto es igual
-			 // a, por ejemplo, "Directorio.MY_USUARIO" sumar el gasto, si no, no se suma.
-			 gastoGlobal += newGasto.get().getCantidad();
-			 // Se evalua si el gasto corresponde a este mes
-			 if(newGasto.get().realizadoEnEsteMes())
-				 addIntoGastosDelMes(newGasto.get());
-			// Se evalua si el gasto corresponde a esta semana
-			 if(newGasto.get().realizadoEnEstaSemana())
-				 addIntoGastosDeLaSemana(newGasto.get());
-		 }
-		 return newGasto;
-	}
-	*/
 	
 	/**
 	 * Actualiza el conjunto de los gastos de esta semana.

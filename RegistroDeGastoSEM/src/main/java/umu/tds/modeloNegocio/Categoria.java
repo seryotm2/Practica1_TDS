@@ -11,6 +11,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import umu.tds.controlador.AppControlGastos;
+
 public class Categoria {
 	
 	private String nomCategoria;
@@ -52,10 +54,9 @@ public class Categoria {
 		newGasto.setCategoria(this);
 		
 		if(gastos.add(newGasto)) {
-			//TODO Antes de sumar el gasto hay que ver si el usuario del gasto coincide con
-			 // el usuario por defecto, es decir, si el usauario del nuevo gasto es igual
-			 // a, por ejemplo, "Directorio.MY_USUARIO" sumar el gasto, si no, no se suma.
-			gastoTotal += newGasto.getCantidad();
+			boolean esGastoPropio = usuario.equals(AppControlGastos.getInstancia().getUsuarioActual());
+			if(esGastoPropio) 
+				gastoTotal += newGasto.getCantidad();
 			return Optional.of(newGasto);
 		}		
 		return Optional.empty();		
@@ -123,11 +124,11 @@ public class Categoria {
 	
 	public boolean eliminarGasto(Gasto e) {
 		boolean resultado = gastos.remove(e);
-		if(resultado)
-			//TODO Antes de restar el gasto hay que ver si el usuario del gasto coincide con
-			 // el usuario por defecto, es decir, si el usauario del gasto es igual
-			 // a, por ejemplo, "Directorio.MY_USUARIO" restar el gasto, si no, no se suma.
-			this.gastoTotal -= e.getCantidad();
+		if(resultado) {
+			boolean esGastoPropio = e.getUsuario().equals(AppControlGastos.getInstancia().getUsuarioActual());
+			if(esGastoPropio)
+				this.gastoTotal -= e.getCantidad();
+		}
 		return resultado;
 	}
 	

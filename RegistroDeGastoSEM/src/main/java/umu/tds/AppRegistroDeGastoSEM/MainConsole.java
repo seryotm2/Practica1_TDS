@@ -176,7 +176,7 @@ public class MainConsole {
 
     private static void mostrarEstado() {
         System.out.println("\n--- ESTADO FINANCIERO ---");
-        System.out.println(">> Tu Gasto Global Total: " + LibroDeCuenta.getInstancia().getGastoGlobal() + "€");
+        System.out.println(">> Tu Gasto Global Total: " + LibroDeCuenta.getInstancia().getGastoGlobal() + "€");	//VIOLACIÓN DE EXPERTO! Se debe llamar al controlador, no ha libro de cuenta.
         
         List<CuentaCompartida> grupos = controller.getCuentasCompartidas();
         if (grupos.isEmpty()) {
