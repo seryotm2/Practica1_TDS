@@ -58,11 +58,6 @@ public class LibroDeCuenta {
 	//TODO En caso de implementar otra forma de identificar las cuentas, por ejemplo, con un número
 	// de secuencia, haciendo que el nombre se pueda repetir en varias cuentas, hacer que este método
 	// devuelva una lista.
-	public Optional<CuentaCompartida> buscarCuenta(String nombreCuenta){
-		return this.cuentasCompartidas.stream()
-				.filter(cc -> nombreCuenta.equals(cc.getNombre()))
-				.findFirst();
-	}
 	
 	
 	//Por Sergio
@@ -296,8 +291,26 @@ public class LibroDeCuenta {
 			addIntoGastosDeLaSemana(g);
 	}
 	
+	public Optional<CuentaCompartida> buscarCuentaCompartidaPorId(int id) {
+        return this.cuentasCompartidas.stream()
+                .filter(cc -> cc.getId() == id)
+                .findFirst();
+    }
+	
 	/**
 	 * TODO Falta la recuperación de datos desde el
 	 * repositorio.
 	 */
+	
+	public void setCuentasCompartidas(List<CuentaCompartida> cuentas) {
+        this.cuentasCompartidas = new ArrayList<>(cuentas);
+        
+        int maxId = 0;
+        for (CuentaCompartida cc : cuentas) {
+            if (cc.getId() > maxId) {
+                maxId = cc.getId();
+            }
+        }
+        CuentaCompartida.setContador(maxId);
+    }
 }
