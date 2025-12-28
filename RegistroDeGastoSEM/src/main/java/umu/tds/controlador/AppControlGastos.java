@@ -11,6 +11,8 @@ import umu.tds.modeloNegocio.Directorio;
 import umu.tds.modeloNegocio.LibroDeCuenta;
 import umu.tds.modeloNegocio.Usuario;
 import umu.tds.repository.RepositorioGastos;
+import umu.tds.modeloNegocio.importador.FactoriaImportadores;
+import umu.tds.modeloNegocio.importador.IImportador;
 import umu.tds.repository.RepositorioUsuarios;
 import umu.tds.repository.impl.RepositorioGastosJSONImpl;
 import umu.tds.repository.impl.RepositorioUsuariosJSON;
@@ -146,6 +148,29 @@ public class AppControlGastos {
      */
     public boolean registrarCategoria(String nombre) {
         return libroDeCuenta.crearCategoria(nombre);
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    public boolean importarGastos(String rutaFichero) {
+        IImportador importador = FactoriaImportadores.getImportador(rutaFichero);
+        
+        if (importador == null) {
+            System.err.println("Formato de archivo no soportado.");
+            return false;
+        }
+        
+        List<Gasto> gastos = importador.importarGastos(rutaFichero);
+        
+        if (!gastos.isEmpty()) {
+             return true;
+        }
+        return false;
     }
     
 }

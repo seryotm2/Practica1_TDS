@@ -24,8 +24,8 @@ public class CuentaCompartida {
         this.participantes = new ArrayList<>(participantes); 
         this.gastos = new ArrayList<>();
         this.porcentajes = new HashMap<>();
-        this.id = this.contador;
-        this.contador++;
+        this.id = CuentaCompartida.contador;
+        CuentaCompartida.contador++;
     }
     
     public CuentaCompartida() {
