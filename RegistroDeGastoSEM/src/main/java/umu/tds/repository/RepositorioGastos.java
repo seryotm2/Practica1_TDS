@@ -1,8 +1,10 @@
 package umu.tds.repository;
 
+import java.util.List;
 import java.util.Set;
 
 import umu.tds.modeloNegocio.Categoria;
+import umu.tds.modeloNegocio.CuentaCompartida;
 import umu.tds.modeloNegocio.Gasto;
 
 public interface RepositorioGastos {
@@ -33,6 +35,12 @@ public interface RepositorioGastos {
 	Set<Gasto> getHistorico();
 	
 	/**
+	 * Añade un nuevo Gasto al historico de gastos.
+	 * @param newGasto El nuevo gasto a añadir.
+	 */
+	void updateHistorico(Gasto newGasto);
+	
+	/**
 	 * Recupera los nombres de las categorías ya existentes en disco.
 	 * @return Conjunto de nombres de categorías.
 	 */
@@ -43,5 +51,18 @@ public interface RepositorioGastos {
 	 * @param nombreCategoria Nombre de la nueva categoría
 	 */
 	void registrarCategoria(String nombreCategoria);
+	
+	/**
+	 * Retorna una lista de cuentas compartidas guardadas en disco.
+	 * @return Lista de cuentas.
+	 */
+	List<CuentaCompartida> getCuentas();
+	
+	/**
+	 * Actualiza la lista de cuentas compartidas almacenadas en disco.
+	 * @param lista Nueva lista a almacenar.
+	 */
+	void updateCuentas(List<CuentaCompartida> lista);
+	
 
 }
