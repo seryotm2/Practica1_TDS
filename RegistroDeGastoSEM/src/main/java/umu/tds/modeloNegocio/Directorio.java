@@ -10,6 +10,8 @@ import umu.tds.repository.RepositorioUsuarios;
 import umu.tds.repository.impl.RepositorioUsuariosJSON;
 
 public class Directorio {
+	
+	private static Directorio instancia = null;	//Singleton
     
     public static final String NOMBRE_PROPIETARIO = "Yo";  //esto lo dejo de momento así, ya veremos la manera de cambiar el nombre
     
@@ -17,7 +19,7 @@ public class Directorio {
     private Map<String, Usuario> usuarios;
     private static Usuario usuarioPropietario = new Usuario(NOMBRE_PROPIETARIO, ""); ;
 
-    public Directorio() {
+    private Directorio() {	// Constructor privado. Antes público. Marco.
         this.usuarios = new HashMap<>();
         this.repositorio = new RepositorioUsuariosJSON();
         
@@ -25,6 +27,18 @@ public class Directorio {
         for(Usuario u : listaCargada) {
             this.usuarios.put(u.getNombre(), u);
         }
+    }
+    
+    //Marco: He puesto esta clase como un Singleton
+    /**
+     * Retorna una instancia de Directorio. Sucesivas llamadas a esté método
+     * retornan el mismo objeto. Solo se crea en la primeta llamada.
+     * @return Un objeto Directorio.
+     */
+    public static Directorio getInstancia() {
+    	if(instancia==null)
+    		return instancia = new Directorio();
+    	return instancia;
     }
 
     /**

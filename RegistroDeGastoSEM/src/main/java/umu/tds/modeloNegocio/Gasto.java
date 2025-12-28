@@ -5,6 +5,7 @@ import java.time.YearMonth;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
@@ -14,13 +15,14 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @JsonIdentityInfo(
 	    generator = ObjectIdGenerators.PropertyGenerator.class,
-	    property = "idCompuesto"
+	    property = "id"
 	)
 public class Gasto implements Comparable<Gasto>{
 	
 	private String concepto;
 	private double cantidad;
 	private LocalDate fecha;
+	private UUID id;
 	
 	@JsonIdentityReference(alwaysAsId = true)
 	private Categoria categoria;
@@ -29,10 +31,19 @@ public class Gasto implements Comparable<Gasto>{
 	public Gasto() {}
 	
 	public Gasto(double cantidad, LocalDate fecha) {
+		this.id = UUID.randomUUID();
 		this.cantidad = cantidad;
 		this.fecha = fecha;
 		this.concepto = "";
 	}
+	
+	public UUID getId() {
+        return id;
+    }
+	
+	private void setId(UUID id) {
+        this.id = id;
+    }
 	
 	public String getConcepto() {
 		return concepto;
@@ -107,13 +118,13 @@ public class Gasto implements Comparable<Gasto>{
 	
 	@Override
 	public String toString() {
-		return "Gasto [fecha=" + fecha + ", cantidad=" + cantidad +  ", concepto=" + concepto + ", categoría="
-				+ categoria + ", usuario=" + usuario + "]";
+		return "Gasto [concepto=" + concepto + ", cantidad=" + cantidad + ", fecha=" + fecha 
+				+ ", categoria=" + categoria.getNombreCategoria() + ", usuario=" + usuario + ", id=" + id + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(cantidad, categoria, concepto, fecha);
+		return Objects.hash(id);
 	}
 
 	@Override
@@ -125,32 +136,15 @@ public class Gasto implements Comparable<Gasto>{
 		if (getClass() != obj.getClass())
 			return false;
 		Gasto other = (Gasto) obj;
-		return Double.doubleToLongBits(cantidad) == Double.doubleToLongBits(other.cantidad)
-				&& Objects.equals(categoria, other.categoria) && Objects.equals(concepto, other.concepto)
-				&& Objects.equals(fecha, other.fecha)
-				&& Objects.equals(usuario, other.usuario);
+		return Objects.equals(id, other.id);
 	}
 
 	@Override
 	public int compareTo(Gasto o) {
-		if(this.fecha.isAfter(o.fecha))
-			return 1;
-		if(this.fecha.isBefore(o.fecha))
-			return -1;
-		int empate = ((Double)cantidad).compareTo(o.cantidad);
-		if(empate != 0)
-			return empate;
-		empate = concepto.compareTo(o.concepto);
-		if(empate != 0)
-			return empate;
-		return this.usuario.compareTo(o.usuario);
-	}
+        int cmp = fecha.compareTo(o.fecha);
+        if (cmp != 0) return cmp;
+        return id.compareTo(o.id);
+    }
 	
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	public String getIdCompuesto() {
-	    return fecha + "-" + cantidad + "-" + concepto + "-" + usuario;
-	}
-
-
-	
+		
 }

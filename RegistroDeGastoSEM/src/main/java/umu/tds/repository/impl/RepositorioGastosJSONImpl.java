@@ -37,6 +37,7 @@ public class RepositorioGastosJSONImpl implements RepositorioGastos{
 			try {
 				// Se crea el directorio donde se van a guardar los gastos
 				Files.createDirectories(Paths.get(REPOSITORY_PATH));
+				Files.createDirectories(Paths.get(CATEGORIES_PATH));
 				Files.createFile(Paths.get(HISTORIAL_PATH));
 				Files.createDirectories(Paths.get(CUENTAS_PATH).getParent());
 			} catch (IOException e) {
@@ -46,6 +47,7 @@ public class RepositorioGastosJSONImpl implements RepositorioGastos{
 		mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
 		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		getHistorico();
 	}
 	
 	@Override
@@ -78,9 +80,9 @@ public class RepositorioGastosJSONImpl implements RepositorioGastos{
 	@Override
 	public void eliminarGasto(Gasto gasto) {
 		if(historial.remove(gasto)) {
-			Path ficheroCat = Paths.get(HISTORIAL_PATH);
+			Path ficheroHis = Paths.get(HISTORIAL_PATH);
 			try {
-				mapper.writerWithDefaultPrettyPrinter().writeValue(ficheroCat.toFile(), historial);
+				mapper.writerWithDefaultPrettyPrinter().writeValue(ficheroHis.toFile(), historial);
 			} catch (Exception e) {e.printStackTrace();} 
 		}
 	}
@@ -130,18 +132,20 @@ public class RepositorioGastosJSONImpl implements RepositorioGastos{
 		Set<String> cat = new TreeSet<>();
 		if(!Files.exists(catList)) {
 			try {
-				Files.createDirectories(catList.getParent());
+				Files.createFile(catList);
 			} catch (IOException e) {e.printStackTrace();}
 			cat.add(nombreCategoria);
 			try {
 				mapper.writerWithDefaultPrettyPrinter().writeValue(catList.toFile(), cat);
 			} catch (Exception e) {e.printStackTrace();}
 		}
-		cat = getIdCategorias();
-		if(cat.add(nombreCategoria)) {
-			try {	
-				mapper.writerWithDefaultPrettyPrinter().writeValue(catList.toFile(), cat);
-			} catch (Exception e) {e.printStackTrace();}
+		else {
+			cat = getIdCategorias();
+			if(cat.add(nombreCategoria)) {
+				try {	
+					mapper.writerWithDefaultPrettyPrinter().writeValue(catList.toFile(), cat);
+				} catch (Exception e) {e.printStackTrace();}
+			}
 		}
 		try {//Creación del fichero propio de la categoría
 			Files.createFile(Paths.get(CATEGORIES_PATH + "/"+ nombreCategoria + ".json"));
@@ -175,7 +179,6 @@ public class RepositorioGastosJSONImpl implements RepositorioGastos{
 		Path fCuentas = Paths.get(CUENTAS_PATH);
 		if(!Files.exists(fCuentas)) {
 			try {//Creación del fichero de cuentas
-				Files.createDirectories(fCuentas.getParent());				
 				Files.createFile(fCuentas);
 			} catch (IOException e) {e.printStackTrace();}
 		}

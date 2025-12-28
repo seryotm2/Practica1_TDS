@@ -25,8 +25,7 @@ public class LibroDeCuenta {
 	
 	double gastoGlobal;
 	HashMap<String,Categoria> categorias;
-	TreeSet<Gasto> gastosDeLaSemana, gastosDelMes;
-	
+	Set<Gasto> gastosDeLaSemana, gastosDelMes;	
 	List<CuentaCompartida> cuentasCompartidas;	//por Sergio
 	
 	
@@ -42,12 +41,48 @@ public class LibroDeCuenta {
 	}
 	
 	static public LibroDeCuenta getInstancia() {
-		if(instancia == null)
-			return instancia = new LibroDeCuenta();
+		if(instancia == null) {
+			instancia = new LibroDeCuenta();
+			LibroDeCuenta.cargarCategorias();
+			LibroDeCuenta.recuperarGastoGlobal();
+			LibroDeCuenta.cargarGastosDelMes();
+			LibroDeCuenta.cargarGastosDeLaSemana();
+			LibroDeCuenta.cargarCuentas();
+		}
 		return instancia;
 	}
 
+	static private void cargarCategorias() {
+		Set<String> catnombres = AppControlGastos.getInstancia().getRepoGastos().getIdCategorias();
+		if(catnombres.isEmpty()) return;
+		catnombres.forEach(cn-> instancia.categorias.put(cn, new Categoria(cn)));
+	}
 	
+	static private void recuperarGastoGlobal() {
+		Set<Gasto> historico = AppControlGastos.getInstancia().getRepoGastos().getHistorico();
+		instancia.gastoGlobal = historico.stream()
+			.filter(g-> g.getUsuario().equals(Directorio.getUsuarioPropietario()))
+			.collect(Collectors.summingDouble(Gasto::getCantidad));
+	}
+	
+	static private void cargarGastosDelMes() {
+		Set<Gasto> historico = AppControlGastos.getInstancia().getRepoGastos().getHistorico();
+		historico.stream()
+			.filter(Gasto::realizadoEnEsteMes)
+			.forEach(g-> instancia.gastosDelMes.add(g));
+	}
+	
+	static private void cargarGastosDeLaSemana() {
+		Set<Gasto> historico = AppControlGastos.getInstancia().getRepoGastos().getHistorico();
+		historico.stream()
+			.filter(Gasto::realizadoEnEstaSemana)
+			.forEach(g-> instancia.gastosDeLaSemana.add(g));
+	}
+	
+	static private void cargarCuentas() {
+		instancia.setCuentasCompartidas(AppControlGastos.getInstancia().getRepoGastos()
+				.getCuentas());
+	}
 	
 	/**
 	 * Busca en la lista de cuentas compartidas la cuenta que coincida con un nombre dado.
@@ -64,9 +99,12 @@ public class LibroDeCuenta {
     
     public void addCuentaCompartida(CuentaCompartida cuenta) {
         cuentasCompartidas.add(cuenta);
+        AppControlGastos.getInstancia().getRepoGastos().updateCuentas(cuentasCompartidas);
     }
 
     public List<CuentaCompartida> getCuentasCompartidas() {
+    	if(cuentasCompartidas.isEmpty())
+    		cuentasCompartidas = AppControlGastos.getInstancia().getRepoGastos().getCuentas();
         return Collections.unmodifiableList(cuentasCompartidas);
     }
     
@@ -94,8 +132,9 @@ public class LibroDeCuenta {
                  if(newGasto.realizadoEnEstaSemana())
                      addIntoGastosDeLaSemana(newGasto);
              }
+             AppControlGastos.getInstancia().getRepoGastos().updateHistorico(newGasto);
          }
-         return newGastoOpt;
+        return newGastoOpt;
     }
 	
 	
@@ -143,6 +182,7 @@ public class LibroDeCuenta {
 		if(categorias.containsKey(nombre))
 			return false;
 		categorias.put(nombre, new Categoria(nombre));
+		AppControlGastos.getInstancia().getRepoGastos().registrarCategoria(nombre);
 		return true;
 	}
 	
@@ -210,7 +250,7 @@ public class LibroDeCuenta {
 	 * */
 	public List<Gasto> getUltimosNGastos(int n){
 		
-		LinkedList<Gasto> list = new LinkedList<>();
+	/*  LinkedList<Gasto> list = new LinkedList<>();
 		if(n<=0) return list;
 		
 		for(var cat: categorias.values()) {
@@ -222,7 +262,12 @@ public class LibroDeCuenta {
 			return list.stream().sorted(Comparator.reverseOrder()).limit(n)
 					.collect(Collectors.toList());
 		}
-		return list;
+		return list; */
+		return AppControlGastos.getInstancia().getRepoGastos()
+				.getHistorico().stream()
+				.limit(n)
+				.sorted(Comparator.reverseOrder())
+				.collect(Collectors.toList());
 	}
 	
 	public boolean eliminarGasto(Gasto e) {
@@ -240,6 +285,7 @@ public class LibroDeCuenta {
 					gastosDelMes.remove(e);
 				gastoGlobal -= e.getCantidad();
 			}
+			AppControlGastos.getInstancia().getRepoGastos().eliminarGasto(e);
 		}
 		return resultado;
 	}
@@ -261,8 +307,17 @@ public class LibroDeCuenta {
 			return false;
 		if(g.getCategoria().equals(c))
 			return true;
-		g.setCategoria(c);
-		return c.addGasto(g);
+		Categoria antigua = g.getCategoria();
+		Categoria nueva = this.categorias.get(c.getNombreCategoria());
+		g.setCategoria(nueva);
+	    if (!nueva.addGasto(g)) {
+	        g.setCategoria(antigua);
+	        return false;
+	    }
+	    antigua.eliminarGasto(g);
+	    AppControlGastos.getInstancia().getRepoGastos().updateHistorico(g);
+
+	    return true;
 	}
 	
 	/**
@@ -274,21 +329,24 @@ public class LibroDeCuenta {
 	 * destino, false en caso de fallo.
 	 */
 	public boolean cambiarGastoDeCategoria(Gasto g, String c) {
-		if(!existeCategoria(c))
-			return false;
-		Categoria cat = this.categorias.get(c);
-		if(g.getCategoria().equals(cat))
-			return true;
-		g.setCategoria(cat);
-		return cat.addGasto(g);
+		return cambiarGastoDeCategoria(g, new Categoria(c));
 	}
 	
 	public void cambiarFechaDeGasto(Gasto g, LocalDate newFecha) {
-		g.setFecha(newFecha);
-		if(g.realizadoEnEsteMes())
-			addIntoGastosDelMes(g);
-		if(g.realizadoEnEstaSemana())
-			addIntoGastosDeLaSemana(g);
+		Categoria gCat = g.getCategoria();
+		gCat.eliminarGasto(g);
+		gastosDeLaSemana.remove(g);
+		gastosDelMes.remove(g);
+		AppControlGastos.getInstancia().getRepoGastos().eliminarGasto(g);
+		Optional<Gasto> nuevo = gCat.addNewGasto(g.getCantidad(), newFecha, g.getUsuario(), g.getConcepto());
+		if(nuevo.isPresent()) {
+			g = nuevo.get();
+			AppControlGastos.getInstancia().getRepoGastos().updateHistorico(g);
+			if(g.realizadoEnEsteMes())
+				addIntoGastosDelMes(g);
+			if(g.realizadoEnEstaSemana())
+				addIntoGastosDeLaSemana(g);
+		}
 	}
 	
 	public Optional<CuentaCompartida> buscarCuentaCompartidaPorId(int id) {

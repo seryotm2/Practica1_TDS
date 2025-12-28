@@ -10,7 +10,9 @@ import umu.tds.modeloNegocio.CuentaCompartida;
 import umu.tds.modeloNegocio.Directorio;
 import umu.tds.modeloNegocio.LibroDeCuenta;
 import umu.tds.modeloNegocio.Usuario;
+import umu.tds.repository.RepositorioGastos;
 import umu.tds.repository.RepositorioUsuarios;
+import umu.tds.repository.impl.RepositorioGastosJSONImpl;
 import umu.tds.repository.impl.RepositorioUsuariosJSON;
 import umu.tds.modeloNegocio.Gasto;
 
@@ -20,11 +22,12 @@ public class AppControlGastos {
     private Directorio directorio;
     private LibroDeCuenta libroDeCuenta;
     private RepositorioUsuarios repositorio;
+    private RepositorioGastos repoGastos;
 
     private AppControlGastos() {
-        this.directorio = new Directorio();
+        this.directorio = Directorio.getInstancia();
         this.libroDeCuenta = LibroDeCuenta.getInstancia();
-        
+        this.repoGastos = new RepositorioGastosJSONImpl();
         this.repositorio = new RepositorioUsuariosJSON();
         
         List<CuentaCompartida> cuentasGuardadas = repositorio.getCuentas();
@@ -37,7 +40,11 @@ public class AppControlGastos {
         }
         return instancia;
     }
-
+    
+    public RepositorioGastos getRepoGastos() {
+    	return repoGastos;
+    }
+    
     public Usuario getUsuarioActual() {
         return Directorio.getUsuarioPropietario();
     }
