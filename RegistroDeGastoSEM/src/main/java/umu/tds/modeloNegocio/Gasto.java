@@ -148,7 +148,7 @@ public class Gasto implements Comparable<Gasto>{
 	
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	public String getIdCompuesto() {
-	    return fecha + "-" + cantidad + "-" + concepto;
+	    return fecha + "-" + cantidad + "-" + concepto + "-" + usuario;
 	}
 
 

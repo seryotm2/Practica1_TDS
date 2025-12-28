@@ -2,6 +2,13 @@ package umu.tds.modeloNegocio;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+@JsonIdentityInfo(
+	    generator = ObjectIdGenerators.PropertyGenerator.class,
+	    property = "email"
+	)
 public class Usuario implements Comparable<Usuario>{
 	private String nombre;
 	private String email;
