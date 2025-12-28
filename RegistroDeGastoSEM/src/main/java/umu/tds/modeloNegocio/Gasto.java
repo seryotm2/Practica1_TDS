@@ -6,13 +6,27 @@ import java.time.temporal.WeekFields;
 import java.util.Locale;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+
+@JsonIdentityInfo(
+	    generator = ObjectIdGenerators.PropertyGenerator.class,
+	    property = "idCompuesto"
+	)
 public class Gasto implements Comparable<Gasto>{
 	
 	private String concepto;
 	private double cantidad;
 	private LocalDate fecha;
+	
+	@JsonIdentityReference(alwaysAsId = true)
 	private Categoria categoria;
 	private Usuario usuario;
+	
+	public Gasto() {}
 	
 	public Gasto(double cantidad, LocalDate fecha) {
 		this.cantidad = cantidad;
@@ -113,7 +127,8 @@ public class Gasto implements Comparable<Gasto>{
 		Gasto other = (Gasto) obj;
 		return Double.doubleToLongBits(cantidad) == Double.doubleToLongBits(other.cantidad)
 				&& Objects.equals(categoria, other.categoria) && Objects.equals(concepto, other.concepto)
-				&& Objects.equals(fecha, other.fecha);
+				&& Objects.equals(fecha, other.fecha)
+				&& Objects.equals(usuario, other.usuario);
 	}
 
 	@Override
@@ -125,8 +140,17 @@ public class Gasto implements Comparable<Gasto>{
 		int empate = ((Double)cantidad).compareTo(o.cantidad);
 		if(empate != 0)
 			return empate;
-		return concepto.compareTo(o.concepto);
+		empate = concepto.compareTo(o.concepto);
+		if(empate != 0)
+			return empate;
+		return this.usuario.compareTo(o.usuario);
 	}
+	
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	public String getIdCompuesto() {
+	    return fecha + "-" + cantidad + "-" + concepto;
+	}
+
 
 	
 }

@@ -11,28 +11,45 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import umu.tds.controlador.AppControlGastos;
 
+@JsonIdentityInfo(
+	    generator = ObjectIdGenerators.PropertyGenerator.class,
+	    property = "nombreCategoria"
+	)
 public class Categoria {
+	@JsonProperty("Nombre")
+	private String nombreCategoria;
 	
-	private String nomCategoria;
+	@JsonProperty("ListadoDeGastos")
 	private TreeSet<Gasto> gastos;
+	
+	
 	private double gastoTotal;
 	
+	public Categoria() {} 
+	
 	public Categoria(String nombre) {
-		nomCategoria = nombre;
+		nombreCategoria = nombre;
 		gastos = new TreeSet<Gasto>();
 		gastoTotal = 0;
 	}
 
 	public String getNombreCategoria() {
-		return nomCategoria;
+		return nombreCategoria;
 	}
 
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	public Set<Gasto> getGastos() {
 		return Collections.unmodifiableSet(gastos);
 	}
 
+	@JsonIgnore
 	public double getGastoTotal() {
 		return gastoTotal;
 	}
@@ -135,7 +152,7 @@ public class Categoria {
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(nomCategoria);
+		return Objects.hash(nombreCategoria);
 	}
 
 	@Override
@@ -147,7 +164,7 @@ public class Categoria {
 		if (getClass() != obj.getClass())
 			return false;
 		Categoria other = (Categoria) obj;
-		return Objects.equals(nomCategoria, other.nomCategoria);
+		return Objects.equals(nombreCategoria, other.nombreCategoria);
 	}
 	
 }

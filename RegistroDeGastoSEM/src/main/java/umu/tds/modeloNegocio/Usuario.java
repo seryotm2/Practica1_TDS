@@ -2,7 +2,7 @@ package umu.tds.modeloNegocio;
 
 import java.util.Objects;
 
-public class Usuario {
+public class Usuario implements Comparable<Usuario>{
 	private String nombre;
 	private String email;
 	
@@ -40,11 +40,20 @@ public class Usuario {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Usuario usuario = (Usuario) o;
-        return Objects.equals(nombre, usuario.nombre);
-    }
+        return Objects.equals(nombre, usuario.nombre)
+        		&& Objects.equals(email, usuario.email);
+	}
 	
 	@Override
-    public int hashCode() {
-        return Objects.hash(nombre);
-    }
+	public int hashCode() {
+		return Objects.hash(email, nombre);
+	}
+
+	@Override
+	public int compareTo(Usuario o) {
+		int comp = this.nombre.compareTo(o.nombre);
+		if(comp == 0)
+			return this.email.compareTo(o.email);
+		return comp;
+	}
 }
