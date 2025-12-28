@@ -12,6 +12,9 @@ public class CuentaCompartida {
     private List<Usuario> participantes;
     private List<Gasto> gastos;
     
+    private static int contador = 1;
+    private int id;
+    
     // Si el mapa está vacío, se asume reparto equitativo.
     private Map<Usuario, Double> porcentajes;
 
@@ -20,8 +23,23 @@ public class CuentaCompartida {
         this.participantes = new ArrayList<>(participantes); 
         this.gastos = new ArrayList<>();
         this.porcentajes = new HashMap<>();
+        this.id = this.contador;
+        this.contador++;
     }
     
+    public CuentaCompartida() {
+        this.participantes = new ArrayList<>(); 
+        this.gastos = new ArrayList<>();
+        this.porcentajes = new HashMap<>();
+    }
+    
+    public int getId() {
+    	return this.id;
+    }
+    
+    public void setId(int id) {
+    	this.id = id;
+    }
     
     public void setPorcentajes(Map<Usuario, Double> porcentajes) {
         this.porcentajes = new HashMap<>(porcentajes);
@@ -29,6 +47,10 @@ public class CuentaCompartida {
 
     public boolean addGasto(Gasto g) {
         return gastos.add(g);
+    }
+    
+    public static void setContador(int ultimoId) {
+    	contador = ultimoId + 1;
     }
 
     /**
@@ -69,4 +91,22 @@ public class CuentaCompartida {
     public List<Gasto> getGastos() {
         return Collections.unmodifiableList(gastos);
     }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        CuentaCompartida other = (CuentaCompartida) obj;
+        return id == other.id;
+    }
+    
+    
+    
+    
 }
