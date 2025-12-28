@@ -19,6 +19,7 @@ public interface RepositorioUsuarios {
 	 */
 	List<CuentaCompartida> getCuentas();
 	
-	
+	void guardarUsuarios(List<Usuario> usuarios);
+    void guardarCuentas(List<CuentaCompartida> cuentas);
 	
 }

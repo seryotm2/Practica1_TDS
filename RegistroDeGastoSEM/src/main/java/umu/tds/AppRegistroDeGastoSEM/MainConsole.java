@@ -176,21 +176,38 @@ public class MainConsole {
 
     private static void mostrarEstado() {
         System.out.println("\n--- ESTADO FINANCIERO ---");
-        System.out.println(">> Tu Gasto Global Total: " + LibroDeCuenta.getInstancia().getGastoGlobal() + "€");	//VIOLACIÓN DE EXPERTO! Se debe llamar al controlador, no ha libro de cuenta.
+        double gastoPagado = LibroDeCuenta.getInstancia().getGastoGlobal();
+        double saldoTotalGrupos = 0;
         
         List<CuentaCompartida> grupos = controller.getCuentasCompartidas();
+        
         if (grupos.isEmpty()) {
             System.out.println(">> No tienes grupos compartidos.");
         } else {
             System.out.println(">> Grupos Compartidos:");
             for (CuentaCompartida cc : grupos) {
-                System.out.println("   [" + cc.getNombre() + "]");
                 Usuario yo = controller.getUsuarioActual();
                 double saldo = cc.getSaldo(yo);
+                saldoTotalGrupos += saldo; // Acumulamos el saldo (+ o -)
+                
                 String estado = saldo >= 0 ? "Te deben" : "Debes";
-                System.out.println("     -> Tu saldo: " + String.format("%.2f", saldo) + "€ (" + estado + ")");
+                System.out.println("   [" + cc.getNombre() + "] -> Saldo: " + String.format("%.2f", saldo) + "€ (" + estado + ")");
             }
         }
+        double consumoReal = gastoPagado - saldoTotalGrupos;
+
+        System.out.println("--------------------------------");
+        System.out.println(">> Pagos realizados (Tu bolsillo): " + String.format("%.2f", gastoPagado) + "€");
+        
+        if (saldoTotalGrupos < 0) {
+            System.out.println(">> (+) Deudas acumuladas (Has consumido pero no pagado): " + String.format("%.2f", Math.abs(saldoTotalGrupos)) + "€");
+        } else {
+            System.out.println(">> (-) Dinero que te deben (Has pagado por otros): " + String.format("%.2f", saldoTotalGrupos) + "€");
+        }
+        
+        System.out.println("================================");
+        System.out.println(">> TU GASTO REAL (Consumo): " + String.format("%.2f", consumoReal) + "€");
+        System.out.println("================================");
     }
     
     private static void crearCategoriaManual(String nombre) {

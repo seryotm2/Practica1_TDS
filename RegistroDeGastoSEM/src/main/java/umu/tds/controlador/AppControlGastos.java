@@ -10,6 +10,8 @@ import umu.tds.modeloNegocio.CuentaCompartida;
 import umu.tds.modeloNegocio.Directorio;
 import umu.tds.modeloNegocio.LibroDeCuenta;
 import umu.tds.modeloNegocio.Usuario;
+import umu.tds.repository.RepositorioUsuarios;
+import umu.tds.repository.impl.RepositorioUsuariosJSON;
 import umu.tds.modeloNegocio.Gasto;
 
 public class AppControlGastos {
@@ -17,10 +19,16 @@ public class AppControlGastos {
     private static AppControlGastos instancia = null;  //singleton
     private Directorio directorio;
     private LibroDeCuenta libroDeCuenta;
+    private RepositorioUsuarios repositorio;
 
     private AppControlGastos() {
         this.directorio = new Directorio();
         this.libroDeCuenta = LibroDeCuenta.getInstancia();
+        
+        this.repositorio = new RepositorioUsuariosJSON();
+        
+        List<CuentaCompartida> cuentasGuardadas = repositorio.getCuentas();
+        libroDeCuenta.setCuentasCompartidas(cuentasGuardadas);
     }
 
     public static AppControlGastos getInstancia() {
@@ -72,13 +80,15 @@ public class AppControlGastos {
      * @param participantes Lista de usuarios involucrados.
      */
     public boolean crearCuentaCompartida(String nombre, List<Usuario> participantes) {
-        List<Usuario> listaCompleta = new ArrayList<>(participantes);
+    	List<Usuario> listaCompleta = new ArrayList<>(participantes);
         Usuario propietario = getUsuarioActual();
         if (!listaCompleta.contains(propietario)) {
             listaCompleta.add(propietario);
         }
-        CuentaCompartida nuevaCuenta = new CuentaCompartida(nombre, participantes);
+        CuentaCompartida nuevaCuenta = new CuentaCompartida(nombre, listaCompleta);
+        
         libroDeCuenta.addCuentaCompartida(nuevaCuenta);
+        repositorio.guardarCuentas(libroDeCuenta.getCuentasCompartidas());
         return true;
     }
     
@@ -87,13 +97,24 @@ public class AppControlGastos {
      * pero solo afectará al saldo global del usuario si el lo pagó.
      */
     public boolean registrarGastoCompartido(CuentaCompartida cuenta, String concepto, double cantidad, LocalDate fecha, Usuario pagador) {
+    	 
         
-        // Por ahora usamos la genérica TODO --------------------------------------------------------------------------------------------------------------
-        String categoria = LibroDeCuenta.GASTOS_GENERALES; 
+        if (!libroDeCuenta.existeCategoria(concepto)) {
+            libroDeCuenta.crearCategoria(concepto);
+        }
         
-        // Crear el gasto
-        Optional<Gasto> gastoOpt = libroDeCuenta.crearGasto(cantidad, fecha, pagador, concepto, categoria);
-        return cuenta.addGasto(gastoOpt.get());
+        Optional<Gasto> gastoOpt = libroDeCuenta.crearGasto(cantidad, fecha, pagador, concepto, concepto);
+        
+        if (gastoOpt.isPresent()) {
+            boolean exito = cuenta.addGasto(gastoOpt.get());
+            
+            if (exito) {
+                repositorio.guardarCuentas(libroDeCuenta.getCuentasCompartidas());
+            }
+            return exito;
+        }
+        
+        return false;
        
     }
     
