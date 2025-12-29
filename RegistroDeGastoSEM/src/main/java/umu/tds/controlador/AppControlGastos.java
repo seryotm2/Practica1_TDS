@@ -43,7 +43,6 @@ public class AppControlGastos {
         this.repositorioUsuarios = new RepositorioUsuariosJSON();
         this.directorio = Directorio.getInstancia();
         this.libroDeCuenta = LibroDeCuenta.getInstancia();
-        this.libroDeCuenta.inicializar(this.repoGastos);
     }
 
     public static AppControlGastos getInstancia() {
