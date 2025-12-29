@@ -23,9 +23,10 @@ public class AppControlGastos {
     private static AppControlGastos instancia = null;  //singleton
     private Directorio directorio;
     private LibroDeCuenta libroDeCuenta;
-    private RepositorioUsuarios repositorio;
+    private RepositorioUsuarios repositorioUsuarios;
     private RepositorioGastos repoGastos;
 
+    /*
     private AppControlGastos() {
         this.directorio = Directorio.getInstancia();
         this.libroDeCuenta = LibroDeCuenta.getInstancia();
@@ -34,6 +35,15 @@ public class AppControlGastos {
         
         List<CuentaCompartida> cuentasGuardadas = repositorio.getCuentas();
         libroDeCuenta.setCuentasCompartidas(cuentasGuardadas);
+    }
+    */
+    
+    private AppControlGastos() {
+        this.repoGastos = new RepositorioGastosJSONImpl();
+        this.repositorioUsuarios = new RepositorioUsuariosJSON();
+        this.directorio = Directorio.getInstancia();
+        this.libroDeCuenta = LibroDeCuenta.getInstancia();
+        this.libroDeCuenta.inicializar(this.repoGastos);
     }
 
     public static AppControlGastos getInstancia() {
@@ -97,7 +107,7 @@ public class AppControlGastos {
         CuentaCompartida nuevaCuenta = new CuentaCompartida(nombre, listaCompleta);
         
         libroDeCuenta.addCuentaCompartida(nuevaCuenta);
-        repositorio.guardarCuentas(libroDeCuenta.getCuentasCompartidas());
+        repoGastos.updateCuentas(libroDeCuenta.getCuentasCompartidas());
         return true;
     }
     
@@ -118,7 +128,7 @@ public class AppControlGastos {
             boolean exito = cuenta.addGasto(gastoOpt.get());
             
             if (exito) {
-                repositorio.guardarCuentas(libroDeCuenta.getCuentasCompartidas());
+            	repoGastos.updateCuentas(libroDeCuenta.getCuentasCompartidas());
             }
             return exito;
         }

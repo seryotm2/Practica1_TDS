@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -15,6 +14,7 @@ import java.util.stream.Collectors;
 
 import umu.tds.controlador.AppControlGastos;
 import umu.tds.modeloNegocio.buscadores.BuscadorCategoria;
+import umu.tds.repository.RepositorioGastos;
 
 public class LibroDeCuenta {
 	
@@ -43,15 +43,53 @@ public class LibroDeCuenta {
 	static public LibroDeCuenta getInstancia() {
 		if(instancia == null) {
 			instancia = new LibroDeCuenta();
+			/*
 			LibroDeCuenta.cargarCategorias();
 			LibroDeCuenta.recuperarGastoGlobal();
 			LibroDeCuenta.cargarGastosDelMes();
 			LibroDeCuenta.cargarGastosDeLaSemana();
 			LibroDeCuenta.cargarCuentas();
+			*/
 		}
 		return instancia;
 	}
+	
+	public void inicializar(RepositorioGastos repo) {
+        cargarCategorias(repo);
+        recuperarGastoGlobal(repo);
+        cargarGastosDelMes(repo);
+        cargarGastosDeLaSemana(repo);
+        cargarCuentas(repo);
+    }
 
+	private void cargarCategorias(RepositorioGastos repo) {
+        Set<String> catnombres = repo.getIdCategorias();
+        if(catnombres.isEmpty()) return;
+        catnombres.forEach(cn-> this.categorias.put(cn, new Categoria(cn)));
+    }
+    
+    private void recuperarGastoGlobal(RepositorioGastos repo) {
+        Set<Gasto> historico = repo.getHistorico();
+        this.gastoGlobal = historico.stream()
+            .filter(g-> g.getUsuario().equals(Directorio.getUsuarioPropietario()))
+            .collect(Collectors.summingDouble(Gasto::getCantidad));
+    }
+    
+    private void cargarGastosDelMes(RepositorioGastos repo) {
+        Set<Gasto> historico = repo.getHistorico();
+        historico.stream().filter(Gasto::realizadoEnEsteMes).forEach(g-> this.gastosDelMes.add(g));
+    }
+    
+    private void cargarGastosDeLaSemana(RepositorioGastos repo) {
+        Set<Gasto> historico = repo.getHistorico();
+        historico.stream().filter(Gasto::realizadoEnEstaSemana).forEach(g-> this.gastosDeLaSemana.add(g));
+    }
+    
+    private void cargarCuentas(RepositorioGastos repo) {
+        setCuentasCompartidas(repo.getCuentas());
+    }
+    
+	/*
 	static private void cargarCategorias() {
 		Set<String> catnombres = AppControlGastos.getInstancia().getRepoGastos().getIdCategorias();
 		if(catnombres.isEmpty()) return;
@@ -83,6 +121,7 @@ public class LibroDeCuenta {
 		instancia.setCuentasCompartidas(AppControlGastos.getInstancia().getRepoGastos()
 				.getCuentas());
 	}
+	*/
 	
 	/**
 	 * Busca en la lista de cuentas compartidas la cuenta que coincida con un nombre dado.
@@ -362,6 +401,21 @@ public class LibroDeCuenta {
 	
 	public void setCuentasCompartidas(List<CuentaCompartida> cuentas) {
         this.cuentasCompartidas = new ArrayList<>(cuentas);
+        
+        for (CuentaCompartida cc : this.cuentasCompartidas) {
+            List<Usuario> participantesReales = new ArrayList<>();
+            for (Usuario u : cc.getParticipantes()) {
+                Optional<Usuario> usuarioReal = Directorio.getInstancia().buscarUsuario(u.getNombre());
+                
+                if (usuarioReal.isPresent()) {
+                    participantesReales.add(usuarioReal.get());
+                } else {
+                    Directorio.getInstancia().crearUsuario(u.getNombre(), u.getEmail());
+                    participantesReales.add(u);
+                }
+            }
+            cc.setParticipantes(participantesReales);
+        }
         
         int maxId = 0;
         for (CuentaCompartida cc : cuentas) {

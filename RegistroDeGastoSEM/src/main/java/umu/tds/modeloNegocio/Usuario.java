@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @JsonIdentityInfo(
 	    generator = ObjectIdGenerators.PropertyGenerator.class,
-	    property = "email"
+	    property = "nombre" 
 	)
 public class Usuario implements Comparable<Usuario>{
 	private String nombre;
