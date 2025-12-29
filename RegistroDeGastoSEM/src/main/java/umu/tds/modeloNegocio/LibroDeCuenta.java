@@ -13,8 +13,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import umu.tds.controlador.AppControlGastos;
-import umu.tds.modeloNegocio.buscadores.BuscadorCategoria;
-import umu.tds.repository.RepositorioGastos;
+import umu.tds.modeloNegocio.buscadores.BuscadorGastos;
 
 public class LibroDeCuenta {
 	
@@ -294,8 +293,8 @@ public class LibroDeCuenta {
 		return resultado;
 	}
 	
-	public Set<Gasto> buscar(BuscadorCategoria buscador){
-		return buscador.buscar();
+	public Set<Gasto> buscarGasto(BuscadorGastos buscador){
+		return buscador.buscar(AppControlGastos.getInstancia().getRepoGastos().getHistorico());
 	}
 	
 	/**

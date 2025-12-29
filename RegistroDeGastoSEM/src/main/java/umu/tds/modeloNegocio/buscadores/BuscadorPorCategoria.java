@@ -4,23 +4,23 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import umu.tds.modeloNegocio.Categoria;
 import umu.tds.modeloNegocio.Gasto;
 
-public class BuscadorPorConcepto extends BuscadorGastos{
-
-	private String concepto;
+public class BuscadorPorCategoria extends BuscadorGastos{
 	
-	public BuscadorPorConcepto(String concepto) {
-		this.concepto = concepto.trim().toLowerCase();
+	private Categoria categoria;
+	
+	public BuscadorPorCategoria(Categoria categoria) {
+		this.categoria = categoria;
 	}
 
 	@Override
 	public Set<Gasto> buscar(Collection<Gasto> gastos) {
 		return gastos.stream()
-				.filter(g-> g.getConcepto().trim().toLowerCase().equals(concepto))
+				.filter(g-> g.getCategoria().equals(categoria))
 				.collect(Collectors.toSet());
 	}
-	
 	
 
 }

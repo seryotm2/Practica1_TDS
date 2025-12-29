@@ -1,6 +1,8 @@
 package umu.tds.modeloNegocio.buscadores;
 
+import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import umu.tds.modeloNegocio.Gasto;
 
@@ -14,15 +16,17 @@ public class BuscadorConConcepto extends BuscadorCompuesto{
 	 * @param bBase El buscador base al que se le añade la funcionalidad.
 	 * @param concepto subcadena que debe contener los Gastos.
 	 */
-	public BuscadorConConcepto(BuscadorCategoria bBase, String concepto) {
+	public BuscadorConConcepto(BuscadorGastos bBase, String concepto) {
 		super(bBase);
-		this.concepto = concepto;
+		this.concepto = concepto.trim().toLowerCase();
 	}
 	
 	@Override
-	public Set<Gasto> buscar() {
-		Set<Gasto> res = super.buscar();
-		res.addAll(super.getCategoria().getGastosConConcepto(concepto));
+	public Set<Gasto> buscar(Collection<Gasto> gastos) {
+		Set<Gasto> res = super.buscar(gastos);
+		res.addAll(gastos.stream()
+				.filter(g-> g.getConcepto().trim().toLowerCase().equals(concepto))
+				.collect(Collectors.toSet()));
 		return res;
 	}
 	

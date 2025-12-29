@@ -1,6 +1,8 @@
 package umu.tds.modeloNegocio.buscadores;
 
+import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import umu.tds.modeloNegocio.Gasto;
 
@@ -16,16 +18,18 @@ public class BuscadorConCantidad extends BuscadorCompuesto{
 	 * @param cotaInferior Catidad mínima buscada. 
 	 * @param cotaSuperior Catidad máxima buscada.
 	 */
-	public BuscadorConCantidad(BuscadorCategoria bBase, double cotaInferior, double cotaSuperior) {
+	public BuscadorConCantidad(BuscadorGastos bBase, double cotaInferior, double cotaSuperior) {
 		super(bBase);
 		this.cotaInferior = cotaInferior;
 		this.cotaSuperior = cotaSuperior;
 	}
 	
 	@Override
-	public Set<Gasto> buscar() {
-		Set<Gasto> res = super.buscar();
-		res.addAll(super.getCategoria().getGastosConCatidad(cotaInferior, cotaSuperior));
+	public Set<Gasto> buscar(Collection<Gasto> gastos) {
+		Set<Gasto> res = super.buscar(gastos);
+		res.addAll(gastos.stream()
+				.filter(g-> g.isCantidadEntre(cotaInferior, cotaSuperior))
+				.collect(Collectors.toSet()));
 		return res;
 	}
 
