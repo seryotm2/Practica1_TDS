@@ -1,1 +1,20 @@
-[
+[ {
+  "nombre" : "edu",
+  "participantes" : [ {
+    "email" : "sergio@gmail.com",
+    "nombre" : "sergio"
+  }, {
+    "email" : "",
+    "nombre" : "Yo"
+  } ],
+  "gastos" : [ ],
+  "id" : 1
+}, {
+  "nombre" : "equipo",
+  "participantes" : [ {
+    "email" : "edu@gmail.com",
+    "nombre" : "edu"
+  }, "sergio@gmail.com", "" ],
+  "gastos" : [ ],
+  "id" : 2
+} ]
