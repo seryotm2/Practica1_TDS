@@ -2,9 +2,6 @@ package umu.tds.modeloNegocio;
 
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -16,22 +13,27 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+
 import umu.tds.controlador.AppControlGastos;
 
 @JsonIdentityInfo(
 	    generator = ObjectIdGenerators.PropertyGenerator.class,
 	    property = "nombreCategoria"
 	)
+
+
 public class Categoria {
-	@JsonProperty("Nombre")
+	//@JsonProperty("Nombre")
 	private String nombreCategoria;
 	
-	@JsonProperty("ListadoDeGastos")
+	//@JsonProperty("ListadoDeGastos")
 	private TreeSet<Gasto> gastos;
 	private double gastoTotal;
 	private boolean cargado = false;	// atributo para saber si la categoría ha recuperado datos de disco.
 	
-	public Categoria() {} 
+	public Categoria() {
+		this.gastos = new TreeSet<>();
+	} 
 	
 	public Categoria(String nombre) {
 		nombreCategoria = nombre;
@@ -43,7 +45,7 @@ public class Categoria {
 		return nombreCategoria;
 	}
 
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	@JsonIgnore
 	public Set<Gasto> getGastos() {
 		if(!this.cargado)
 			recuperarEstado();;
@@ -103,6 +105,7 @@ public class Categoria {
 	/**
 	 * @return True si la categoría está vacía.
 	 */
+	@JsonIgnore
 	public boolean isEmpty() {
 		if(!cargado) {recuperarEstado();}
 		return gastos.isEmpty();

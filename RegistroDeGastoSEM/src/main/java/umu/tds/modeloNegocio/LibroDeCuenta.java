@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -17,6 +16,7 @@ import umu.tds.controlador.AppControlGastos;
 import umu.tds.modeloNegocio.AlertasEstrategia.ObservadorGasto;
 import umu.tds.modeloNegocio.AlertasEstrategia.SujetoGasto;
 import umu.tds.modeloNegocio.buscadores.BuscadorCategoria;
+import umu.tds.repository.RepositorioGastos;
 
 public class LibroDeCuenta implements SujetoGasto{
 	
@@ -53,10 +53,13 @@ public class LibroDeCuenta implements SujetoGasto{
 			LibroDeCuenta.cargarGastosDelMes();
 			LibroDeCuenta.cargarGastosDeLaSemana();
 			LibroDeCuenta.cargarCuentas();
+			
 		}
 		return instancia;
 	}
-
+	
+	
+    
 	static private void cargarCategorias() {
 		Set<String> catnombres = AppControlGastos.getInstancia().getRepoGastos().getIdCategorias();
 		if(catnombres.isEmpty()) return;
@@ -88,6 +91,7 @@ public class LibroDeCuenta implements SujetoGasto{
 		instancia.setCuentasCompartidas(AppControlGastos.getInstancia().getRepoGastos()
 				.getCuentas());
 	}
+
 	
 	/**
 	 * Busca en la lista de cuentas compartidas la cuenta que coincida con un nombre dado.
@@ -368,6 +372,21 @@ public class LibroDeCuenta implements SujetoGasto{
 	
 	public void setCuentasCompartidas(List<CuentaCompartida> cuentas) {
         this.cuentasCompartidas = new ArrayList<>(cuentas);
+        
+        for (CuentaCompartida cc : this.cuentasCompartidas) {
+            List<Usuario> participantesReales = new ArrayList<>();
+            for (Usuario u : cc.getParticipantes()) {
+                Optional<Usuario> usuarioReal = Directorio.getInstancia().buscarUsuario(u.getNombre());
+                
+                if (usuarioReal.isPresent()) {
+                    participantesReales.add(usuarioReal.get());
+                } else {
+                    Directorio.getInstancia().crearUsuario(u.getNombre(), u.getEmail());
+                    participantesReales.add(u);
+                }
+            }
+            cc.setParticipantes(participantesReales);
+        }
         
         int maxId = 0;
         for (CuentaCompartida cc : cuentas) {

@@ -7,9 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class CuentaCompartida {
     
     private String nombre;
+    
     private List<Usuario> participantes;
     private List<Gasto> gastos;
     
@@ -17,7 +21,8 @@ public class CuentaCompartida {
     private int id;
     
     // Si el mapa está vacío, se asume reparto equitativo.
-    private Map<Usuario, Double> porcentajes;
+    
+    private Map<String, Double> porcentajes;
 
     public CuentaCompartida(String nombre, List<Usuario> participantes) {
         this.nombre = nombre;
@@ -42,7 +47,7 @@ public class CuentaCompartida {
     	this.id = id;
     }
     
-    public void setPorcentajes(Map<Usuario, Double> porcentajes) {
+    public void setPorcentajes(Map<String, Double> porcentajes) {
         this.porcentajes = new HashMap<>(porcentajes);
     }
 
@@ -74,7 +79,7 @@ public class CuentaCompartida {
             }
         } else {
             // Reparto por porcentaje
-            double porcentaje = porcentajes.getOrDefault(u, 0.0);
+        	double porcentaje = porcentajes.getOrDefault(u.getNombre(), 0.0);
             cuotaUsuario = totalGastado * (porcentaje / 100.0);
         }
 
@@ -107,7 +112,9 @@ public class CuentaCompartida {
         return id == other.id;
     }
     
-    
+    public void setParticipantes(List<Usuario> p) {
+    	participantes = p;
+    }
     
     
 }

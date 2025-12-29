@@ -24,7 +24,6 @@ public class Gasto implements Comparable<Gasto>{
 	private LocalDate fecha;
 	private UUID id;
 	
-	@JsonIdentityReference(alwaysAsId = true)
 	private Categoria categoria;
 	private Usuario usuario;
 	
