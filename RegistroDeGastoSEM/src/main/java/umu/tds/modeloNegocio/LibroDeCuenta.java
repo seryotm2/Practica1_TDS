@@ -14,8 +14,11 @@ import java.util.stream.Collectors;
 
 import umu.tds.controlador.AppControlGastos;
 import umu.tds.modeloNegocio.buscadores.BuscadorGastos;
+import umu.tds.modeloNegocio.AlertasEstrategia.ObservadorGasto;
+import umu.tds.modeloNegocio.AlertasEstrategia.SujetoGasto;
 
-public class LibroDeCuenta {
+
+public class LibroDeCuenta implements SujetoGasto{
 	
 	static final public String GASTOS_GENERALES = "Gastos Generales";
 	
@@ -26,6 +29,7 @@ public class LibroDeCuenta {
 	HashMap<String,Categoria> categorias;
 	Set<Gasto> gastosDeLaSemana, gastosDelMes;	
 	List<CuentaCompartida> cuentasCompartidas;	//por Sergio
+	private List<ObservadorGasto> obs;
 	
 	
 	private LibroDeCuenta() {
@@ -37,6 +41,8 @@ public class LibroDeCuenta {
 		
 		// Siempre hay una catogoría por defecto que se asignará a los gastos sin categoría especificada.
 		categorias.put(GASTOS_GENERALES, new Categoria(GASTOS_GENERALES));
+		
+		obs = new ArrayList<ObservadorGasto>();
 	}
 	
 	static public LibroDeCuenta getInstancia() {
@@ -136,6 +142,7 @@ public class LibroDeCuenta {
                      addIntoGastosDeLaSemana(newGasto);
              }
              AppControlGastos.getInstancia().getRepoGastos().updateHistorico(newGasto);
+             notificarObservadores();
          }
         return newGastoOpt;
     }
@@ -389,4 +396,21 @@ public class LibroDeCuenta {
         }
         CuentaCompartida.setContador(maxId);
     }
+
+	@Override
+	public void agregarObservador(ObservadorGasto o) {
+		obs.add(o);
+	}
+
+	@Override
+	public void quitarObservador(ObservadorGasto o) {
+		obs.remove(o);
+	}
+
+	@Override
+	public void notificarObservadores() {
+		for (ObservadorGasto o : obs) {
+            o.notificar();
+        }		
+	}
 }
