@@ -23,10 +23,10 @@ import umu.tds.controlador.AppControlGastos;
 	    property = "nombreCategoria"
 	)
 public class Categoria {
-	@JsonProperty("Nombre")
+	//@JsonProperty("Nombre")
 	private String nombreCategoria;
 	
-	@JsonProperty("ListadoDeGastos")
+	//@JsonProperty("ListadoDeGastos")
 	private TreeSet<Gasto> gastos;
 	private double gastoTotal;
 	private boolean cargado = false;	// atributo para saber si la categoría ha recuperado datos de disco.
