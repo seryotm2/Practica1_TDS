@@ -206,7 +206,6 @@ public class AppControlGastos {
         return false;
     }
     
-<<<<<<< HEAD
     /*
     public double obtenerGastoMensual() {
         LocalDate hoy = LocalDate.now();
@@ -328,7 +327,7 @@ public class AppControlGastos {
         return 0.0;
     }
     
-=======
+
     public Set<Gasto> buscarGasto(BuscadorGastos buscador){
     	return libroDeCuenta.buscarGasto(buscador);
     }
@@ -396,6 +395,6 @@ public class AppControlGastos {
 		return bBase.addConcepto(concepto);
 	}
     
->>>>>>> a24f82c6d5834d9d9a97681f3826c8b1508975c3
+
     
 }
