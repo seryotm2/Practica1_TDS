@@ -11,13 +11,21 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 
 
-@JsonIdentityInfo(
-	    generator = ObjectIdGenerators.PropertyGenerator.class,
-	    property = "id"
+@JsonTypeInfo(
+	    use = JsonTypeInfo.Id.NAME, 
+	    include = JsonTypeInfo.As.PROPERTY, 
+	    property = "type",
+	    defaultImpl = GastoIndividual.class 
 	)
-public class Gasto implements Comparable<Gasto>{
+	@JsonSubTypes({
+	    @JsonSubTypes.Type(value = GastoIndividual.class, name = "individual"),
+	    @JsonSubTypes.Type(value = GastoCompartido.class, name = "compartido")
+	})
+public abstract class Gasto implements Comparable<Gasto>{
 	
 	private String concepto;
 	private double cantidad;
@@ -27,9 +35,11 @@ public class Gasto implements Comparable<Gasto>{
 	private Categoria categoria;
 	private Usuario usuario;
 	
-	public Gasto() {}
+	protected Gasto() {
+		this.id = UUID.randomUUID();
+	}
 	
-	public Gasto(double cantidad, LocalDate fecha) {
+	protected Gasto(double cantidad, LocalDate fecha) {
 		this.id = UUID.randomUUID();
 		this.cantidad = cantidad;
 		this.fecha = fecha;
@@ -40,9 +50,11 @@ public class Gasto implements Comparable<Gasto>{
         return id;
     }
 	
+	/*
 	private void setId(UUID id) {
         this.id = id;
     }
+    */
 	
 	public String getConcepto() {
 		return concepto;

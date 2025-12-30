@@ -32,6 +32,7 @@ public class RepositorioGastosJSONImpl implements RepositorioGastos{
 		
 	
 	public RepositorioGastosJSONImpl() {
+        
 		historial = new TreeSet<>(Comparator.reverseOrder());
 		if(!Files.exists(Paths.get(REPOSITORY_PATH)))
 			try {
@@ -187,5 +188,16 @@ public class RepositorioGastosJSONImpl implements RepositorioGastos{
 		} catch (Exception e) {e.printStackTrace();}
 	}
 	
+	@Override
+    public void addGasto(Gasto gasto) {
+		historial.add(gasto);
+		Path ficheroHis = Paths.get(HISTORIAL_PATH);
+        try {
+            mapper.writerWithDefaultPrettyPrinter().writeValue(ficheroHis.toFile(), historial);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

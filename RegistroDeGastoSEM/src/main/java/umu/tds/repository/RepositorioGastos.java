@@ -64,5 +64,7 @@ public interface RepositorioGastos {
 	 */
 	void updateCuentas(List<CuentaCompartida> lista);
 	
+	public void addGasto(Gasto gasto); //por sergio
+	
 
 }

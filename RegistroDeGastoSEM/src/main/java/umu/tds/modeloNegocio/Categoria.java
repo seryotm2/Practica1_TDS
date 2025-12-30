@@ -70,9 +70,8 @@ public class Categoria {
 	 * ya se encontraba en la categoría.
 	 */
 	public Optional<Gasto> addNewGasto(double cantidad, LocalDate fecha, Usuario usuario, String concepto) {
-		Gasto newGasto = new Gasto(cantidad, fecha);
+		Gasto newGasto = new GastoIndividual(concepto, cantidad, fecha);
 		newGasto.setUsuario(usuario);
-	    newGasto.setConcepto(concepto);
 		newGasto.setCategoria(this);
 		
 		if(!cargado) {recuperarEstado();}

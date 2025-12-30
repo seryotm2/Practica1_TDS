@@ -71,4 +71,13 @@ public class Directorio {
     public Map<String, Usuario> getUsuarios() {
         return new HashMap<>(usuarios);
     }
+    
+    public boolean eliminarUsuario(Usuario u) {
+        if (usuarios.containsKey(u.getNombre())) {
+            usuarios.remove(u.getNombre());
+            repositorio.guardarUsuarios(new ArrayList<>(usuarios.values()));
+            return true;
+        }
+        return false;
+    }
 }

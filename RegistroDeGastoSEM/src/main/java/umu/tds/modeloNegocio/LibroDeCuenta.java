@@ -64,7 +64,7 @@ public class LibroDeCuenta {
 	static private void recuperarGastoGlobal() {
 		Set<Gasto> historico = AppControlGastos.getInstancia().getRepoGastos().getHistorico();
 		instancia.gastoGlobal = historico.stream()
-			.filter(g-> g.getUsuario().equals(Directorio.getUsuarioPropietario()))
+			.filter(g -> g.getUsuario() != null && g.getUsuario().equals(Directorio.getUsuarioPropietario()))
 			.collect(Collectors.summingDouble(Gasto::getCantidad));
 	}
 	

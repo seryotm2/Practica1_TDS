@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="645.0" prefWidth="943.0" style="-fx-background-color: #F0FFFF; -fx-border-color: black;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="umu.tds.apps.AppControlGastos.view.AyudaController">
+   <top>
+      <VBox alignment="CENTER" prefHeight="62.0" style="-fx-background-color: #00FF00; -fx-border-color: black;" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Ayuda">
+               <font>
+                  <Font name="DejaVu Serif Bold" size="32.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <VBox alignment="CENTER" spacing="20.0" BorderPane.alignment="CENTER">
+         <children>
+            <TextArea editable="false" maxWidth="600.0" prefHeight="300.0" style="-fx-control-inner-background: #F0FFFF; -fx-border-color: black;" text="Bienvenido a RG:SEM&#10;&#10;1. Use el botón 'Nuevo Gasto' para registrar gastos personales.&#10;2. Use 'Nueva Cuenta Compartida' para crear grupos de amigos.&#10;3. Use 'Añadir Gasto a Grupo' para dividir gastos entre amigos.&#10;4. Consulte sus últimos movimientos en el panel derecho.&#10;&#10;Para soporte técnico contacte con los desarrolladores." wrapText="true">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </TextArea>
+         </children>
+      </VBox>
+   </center>
+   <bottom>
+      <HBox alignment="CENTER" prefHeight="60.0" style="-fx-background-color: #00FF00; -fx-border-color: black;" BorderPane.alignment="CENTER">
+         <children>
+            <Button mnemonicParsing="false" onAction="#volverAlMenu" style="-fx-background-color: #696969; -fx-border-color: black;" text="Volver al Menú" textFill="WHITE" />
+         </children>
+      </HBox>
+   </bottom>
+</BorderPane>

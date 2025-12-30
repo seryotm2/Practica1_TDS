@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="400.0" prefWidth="500.0" style="-fx-background-color: #F0FFFF; -fx-border-color: black;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="umu.tds.apps.AppControlGastos.view.AnadirGastoController">
+   <top>
+      <VBox alignment="CENTER" prefHeight="60.0" style="-fx-background-color: #00FF00; -fx-border-color: black;" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Nuevo Gasto Individual">
+               <font>
+                  <Font name="DejaVu Serif Bold" size="24.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <GridPane alignment="CENTER" hgap="10.0" vgap="15.0" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+         <children>
+            <Label text="Concepto:" GridPane.rowIndex="0" />
+            <TextField fx:id="txtConcepto" promptText="Ej: Compra Mercadona" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            
+            <Label text="Categoría:" GridPane.rowIndex="1" />
+            <ComboBox fx:id="comboCategoria" editable="true" prefWidth="200.0" promptText="Selecciona o escribe..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            
+            <Label text="Cantidad (€):" GridPane.rowIndex="2" />
+            <TextField fx:id="txtCantidad" promptText="0.00" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            
+            <Label text="Fecha:" GridPane.rowIndex="3" />
+            <DatePicker fx:id="datePickerFecha" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+         </children>
+      </GridPane>
+   </center>
+   <bottom>
+      <HBox alignment="CENTER" spacing="20.0" style="-fx-border-color: black; -fx-background-color: #F0FFFF;" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets bottom="15.0" top="15.0" />
+         </padding>
+         <children>
+            <Button mnemonicParsing="false" onAction="#guardarGasto" style="-fx-background-color: #00FF00; -fx-border-color: black;" text="Guardar" />
+            <Button mnemonicParsing="false" onAction="#cancelar" style="-fx-background-color: #FF6347; -fx-border-color: black;" text="Cancelar" textFill="WHITE" />
+         </children>
+      </HBox>
+   </bottom>
+</BorderPane>

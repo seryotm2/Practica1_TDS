@@ -69,9 +69,6 @@ public class ImportadorCSV implements IImportador {
                     if (!subcategory.isEmpty()) {
                         conceptoFinal += " (" + subcategory + ")";
                     }
-                    if (!account.equalsIgnoreCase("Personal")) {
-                        conceptoFinal = "[" + account + "] " + conceptoFinal;
-                    }
 
                     
                     Optional<Gasto> nuevoGasto = LibroDeCuenta.getInstancia().crearGasto(
