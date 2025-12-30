@@ -5,12 +5,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
-
+import umu.tds.modeloNegocio.Categoria;
 import umu.tds.modeloNegocio.CuentaCompartida;
 import umu.tds.modeloNegocio.Directorio;
 import umu.tds.modeloNegocio.LibroDeCuenta;
 import umu.tds.modeloNegocio.Usuario;
+import umu.tds.modeloNegocio.buscadores.BuscadorGastos;
+import umu.tds.modeloNegocio.buscadores.BuscadorPorCantidad;
+import umu.tds.modeloNegocio.buscadores.BuscadorPorCategoria;
+import umu.tds.modeloNegocio.buscadores.BuscadorPorConcepto;
+import umu.tds.modeloNegocio.buscadores.BuscadorPorFecha;
 import umu.tds.repository.RepositorioGastos;
 import umu.tds.modeloNegocio.importador.FactoriaImportadores;
 import umu.tds.modeloNegocio.importador.IImportador;
@@ -200,6 +206,7 @@ public class AppControlGastos {
         return false;
     }
     
+<<<<<<< HEAD
     /*
     public double obtenerGastoMensual() {
         LocalDate hoy = LocalDate.now();
@@ -321,5 +328,74 @@ public class AppControlGastos {
         return 0.0;
     }
     
+=======
+    public Set<Gasto> buscarGasto(BuscadorGastos buscador){
+    	return libroDeCuenta.buscarGasto(buscador);
+    }
+    
+    public BuscadorGastos crearBuscadorFecha(LocalDate fInicio, LocalDate fFinal) {
+    	return new BuscadorPorFecha(fInicio, fFinal);
+    }
+    
+    public BuscadorGastos crearBuscadorConcepto(String concepto) {
+    	return new BuscadorPorConcepto(concepto);
+    }
+    
+    public BuscadorGastos crearBuscadorCantidad(double cotaInferior, double cotaSuperior) {
+    	return new BuscadorPorCantidad(cotaInferior, cotaSuperior);
+    }
+    
+    public BuscadorGastos crearBuscadorCategoria(Categoria categoria) {
+    	return new BuscadorPorCategoria(categoria);
+    }
+    
+    /**
+	 * Crea un nuevo buscador que le añade al buscador original bBase
+	 * la funcionalidad de buscar por intervalo de fechas.
+	 * @param bBase El buscador base al que se le añade la funcionalidad.
+	 * @param fInicio Fecha de donde parte la busqueda.
+	 * @param fFinal Fecha hasta donde se busca.
+	 * @return Un objeto BuscadorGastos 
+	 */
+	public BuscadorGastos BuscadorAddFecha(BuscadorGastos bBase, LocalDate fInicio, LocalDate fFinal) {
+		return bBase.addFecha(fInicio, fFinal);
+	}
+	
+	/**
+	 * Crea un nuevo buscador que le añade al buscador original bBase
+	 * la funcionalidad de buscar por cantidades.
+	 * @param bBase El buscador base al que se le añade la funcionalidad.
+	 * @param cotaInferior Catidad mínima buscada. 
+	 * @param cotaSuperior Catidad máxima buscada.
+	 * @return Un objeto BuscadorGastos 
+	 */
+	public BuscadorGastos BuscadorAddCantidad(BuscadorGastos bBase, double cotaInferior, double cotaSuperior) {
+		return bBase.addCantidad(cotaInferior, cotaSuperior);
+	}
+	
+	
+	/**
+	 * Crea un nuevo buscador que le añade al buscador original bBase
+	 * la funcionalidad de buscar por una categoria.
+	 * @param bBase El buscador base al que se le añade la funcionalidad.
+	 * @param categoria La categoría a filtrar. 
+	 * @return Un objeto BuscadorGastos 
+	 */
+	public BuscadorGastos BuscadorAddCategoria(BuscadorGastos bBase, Categoria categoria) {
+		return bBase.addCategoria(categoria);
+	}
+	
+	/**
+	 * Crea un nuevo buscador que le añade al buscador original bBase
+	 * la funcionalidad de buscar por su concepto.
+	 * @param bBase El buscador base al que se le añade la funcionalidad.
+	 * @param concepto El texto que debe tener el gasto. 
+	 * @return Un objeto BuscadorGastos 
+	 */
+	public BuscadorGastos BuscadorAddConcepto(BuscadorGastos bBase, String concepto) {
+		return bBase.addConcepto(concepto);
+	}
+    
+>>>>>>> a24f82c6d5834d9d9a97681f3826c8b1508975c3
     
 }

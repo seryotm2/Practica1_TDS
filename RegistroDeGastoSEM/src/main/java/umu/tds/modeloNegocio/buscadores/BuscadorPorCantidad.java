@@ -1,24 +1,28 @@
 package umu.tds.modeloNegocio.buscadores;
 
+import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import umu.tds.modeloNegocio.Categoria;
 import umu.tds.modeloNegocio.Gasto;
 
-public class BuscadorPorCantidad extends BuscadorCategoria{
+public class BuscadorPorCantidad extends BuscadorGastos{
 			
 		private double cotaInferior;
 		private double cotaSuperior;
 		
-		public BuscadorPorCantidad(Categoria categoria, double cotaInferior, double cotaSuperior) {
-			super(categoria);
+		public BuscadorPorCantidad(double cotaInferior, double cotaSuperior) {
 			this.cotaInferior = cotaInferior;
 			this.cotaSuperior = cotaSuperior;
 		}
-		
+
 		@Override
-		public Set<Gasto> buscar() {
-			return getCategoria().getGastosConCatidad(cotaInferior, cotaSuperior);
+		public Set<Gasto> buscar(Collection<Gasto> gastos) {
+			return gastos.stream()
+					.filter(g-> g.isCantidadEntre(cotaInferior, cotaSuperior))
+					.collect(Collectors.toSet());
 		}
+		
+		
 
 }

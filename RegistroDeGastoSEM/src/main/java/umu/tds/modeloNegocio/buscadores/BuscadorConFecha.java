@@ -1,7 +1,9 @@
 package umu.tds.modeloNegocio.buscadores;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import umu.tds.modeloNegocio.Gasto;
 
@@ -17,16 +19,18 @@ public class BuscadorConFecha extends BuscadorCompuesto{
 	 * @param fechaInicio Fecha de donde parte la busqueda.
 	 * @param fechaLimite Fecha hasta donde se busca.
 	 */
-	public BuscadorConFecha(BuscadorCategoria bBase, LocalDate fechaInicio, LocalDate fechaLimite) {
+	public BuscadorConFecha(BuscadorGastos bBase, LocalDate fechaInicio, LocalDate fechaLimite) {
 		super(bBase);
 		this.fechaInicio = fechaInicio;
 		this.fechaLimite = fechaLimite;
 	}
 	
 	@Override
-	public Set<Gasto> buscar() {
-		Set<Gasto> res = super.buscar();
-		res.addAll(super.getCategoria().getGastosEnPeriodo(fechaInicio, fechaLimite));
+	public Set<Gasto> buscar(Collection<Gasto> gastos) {
+		Set<Gasto> res = super.buscar(gastos);
+		res.addAll(gastos.stream()
+				.filter(g-> g.realizadoEntre(fechaInicio, fechaLimite))
+				.collect(Collectors.toSet()));
 		return res;
 	}
 
