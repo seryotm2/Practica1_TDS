@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="645.0" prefWidth="943.0" style="-fx-background-color: #F0FFFF; -fx-border-color: black;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="umu.tds.apps.AppControlGastos.view.MenuPrincipalController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="645.0" prefWidth="943.0" style="-fx-background-color: #F0FFFF; -fx-border-color: black;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="umu.tds.apps.AppControlGastos.view.MenuPrincipalController">
    <left>
       <VBox prefHeight="338.0" prefWidth="246.0" spacing="20.0" BorderPane.alignment="CENTER">
          <children>
@@ -124,7 +124,7 @@
    </bottom>
    
    <right>
-      <VBox prefHeight="536.0" prefWidth="350.0" spacing="15.0"  BorderPane.alignment="CENTER">
+      <VBox prefHeight="536.0" prefWidth="350.0" spacing="15.0" BorderPane.alignment="CENTER">
          <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
          </padding>
@@ -152,9 +152,18 @@
                      </font>
                   </Label>
                   <ListView fx:id="listaUltimosGastos" style="-fx-border-color: black;" VBox.vgrow="ALWAYS" />
-                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#actualizarDatos" style="-fx-background-color: #696969;" text="Actualizar Lista" textFill="WHITE" />
                </children>
             </VBox>
+            <HBox prefHeight="33.0" prefWidth="310.0">
+               <children>
+                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#actualizarDatos" prefHeight="26.0" prefWidth="158.0" style="-fx-background-color: #696969;" text="Actualizar Lista" textFill="WHITE" />
+                  <Button mnemonicParsing="false" onAction="#abrirBusqueda" prefHeight="26.0" prefWidth="146.0" style="-fx-background-color: #696969;" text="Filtrar" textFill="WHITE">
+                     <HBox.margin>
+                        <Insets left="12.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
          </children>
       </VBox>
    </right>

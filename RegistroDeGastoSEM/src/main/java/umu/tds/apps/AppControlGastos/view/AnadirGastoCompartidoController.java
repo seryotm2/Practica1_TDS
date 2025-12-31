@@ -23,6 +23,7 @@ public class AnadirGastoCompartidoController {
     @FXML private TextField txtConcepto;
     @FXML private TextField txtCantidad;
     @FXML private DatePicker datePickerFecha;
+    @FXML private ComboBox<String> comboCategoria;
 
     @FXML private TableView<FilaParticipante> tablaReparto;
     @FXML private TableColumn<FilaParticipante, String> colNombre;
@@ -56,6 +57,8 @@ public class AnadirGastoCompartidoController {
             @Override public Usuario fromString(String s) { return null; }
         });
         comboCuentas.getItems().setAll(AppControlGastos.getInstancia().getCuentasCompartidas());
+        
+        comboCategoria.getItems().setAll(AppControlGastos.getInstancia().getNombresCategorias());
     }
 
     private void cargarParticipantes() {
@@ -78,8 +81,10 @@ public class AnadirGastoCompartidoController {
         String concepto = txtConcepto.getText();
         LocalDate fecha = datePickerFecha.getValue();
         String textoCantidad = txtCantidad.getText();
+        String txtCategoria = comboCategoria.getValue();
 
-        if (cuenta == null || pagador == null || concepto == null || concepto.isEmpty() || fecha == null || textoCantidad.isEmpty()) {
+        if (cuenta == null || pagador == null || concepto == null || concepto.isEmpty() || fecha == null 
+        		|| textoCantidad.isEmpty() || txtCategoria == null) {
             mostrarAlerta("Error", "Por favor, rellena todos los campos.");
             return;
         }
@@ -108,9 +113,14 @@ public class AnadirGastoCompartidoController {
             mostrarAlerta("Error de Porcentajes", "Los porcentajes deben sumar 100%.");
             return;
         }
-
+        
+        if(!AppControlGastos.getInstancia().existeCategoria(txtCategoria)) {
+        	mostrarAlerta("Error", "La categoría " + txtCategoria + " no existe.");
+        	return;
+        }
+        
         boolean exito = AppControlGastos.getInstancia().registrarGastoCompartido(
-            cuenta, concepto, cantidad, fecha, pagador, mapaReparto
+            cuenta, concepto, cantidad, fecha, pagador, txtCategoria,mapaReparto
         );
 
         if (exito) {

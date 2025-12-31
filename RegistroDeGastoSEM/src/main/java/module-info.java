@@ -4,6 +4,7 @@ module umu.tds.apps.RegistroDeGastoSEM {
     requires javafx.graphics;
     requires com.fasterxml.jackson.databind; 
     requires com.fasterxml.jackson.datatype.jsr310;
+	requires com.fasterxml.jackson.annotation;
     
     exports umu.tds.apps.AppControlGastos to javafx.graphics;
 

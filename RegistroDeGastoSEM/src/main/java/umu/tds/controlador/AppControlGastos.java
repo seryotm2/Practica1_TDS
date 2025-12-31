@@ -28,12 +28,12 @@ import umu.tds.modeloNegocio.GastoCompartido;
 import umu.tds.modeloNegocio.GastoIndividual;
 
 public class AppControlGastos {
-
+	static private RepositorioUsuarios repositorioUsuarios = new RepositorioUsuariosJSON();
+    static private RepositorioGastos repoGastos = new RepositorioGastosJSONImpl();
     private static AppControlGastos instancia = null;  //singleton
     private Directorio directorio;
     private LibroDeCuenta libroDeCuenta;
-    private RepositorioUsuarios repositorioUsuarios;
-    private RepositorioGastos repoGastos;
+    
 
     /*
     private AppControlGastos() {
@@ -48,10 +48,8 @@ public class AppControlGastos {
     */
     
     private AppControlGastos() {
-        this.repoGastos = new RepositorioGastosJSONImpl();
-        this.repositorioUsuarios = new RepositorioUsuariosJSON();
-        this.directorio = Directorio.getInstancia();
-        this.libroDeCuenta = LibroDeCuenta.getInstancia();
+    	directorio = Directorio.getInstancia();
+    	libroDeCuenta = LibroDeCuenta.getInstancia();
     }
 
     public static AppControlGastos getInstancia() {
@@ -61,9 +59,13 @@ public class AppControlGastos {
         return instancia;
     }
     
-    public RepositorioGastos getRepoGastos() {
+    public static RepositorioGastos getRepoGastos() {
     	return repoGastos;
     }
+    
+   public static RepositorioUsuarios getRepoUsuarios() {
+	   return repositorioUsuarios;
+   }
     
     public Usuario getUsuarioActual() {
         return Directorio.getUsuarioPropietario();
@@ -284,7 +286,7 @@ public class AppControlGastos {
     }
     
     
-    
+    /* Versión no funcional /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     public boolean registrarGasto(String concepto, String categoria, double cantidad, LocalDate fecha) {
         try {
@@ -295,21 +297,29 @@ public class AppControlGastos {
             e.printStackTrace();
             return false;
         }
+    }*/
+    
+    public boolean registrarGasto(String concepto, String categoria, double cantidad, LocalDate fecha) {
+    	if(!libroDeCuenta.existeCategoria(categoria))
+    		return false;
+    	Optional<Gasto> nuevo = libroDeCuenta.crearGasto(cantidad, fecha, getUsuarioActual(), concepto, categoria);
+    	if(nuevo.isEmpty())
+    		return false;
+    	return true;
     }
     
     public boolean registrarGastoCompartido(CuentaCompartida cuenta, String concepto, double cantidad, 
-                                            LocalDate fecha, Usuario pagador, Map<String, Double> porcentajes) {
-        try {
+                                            LocalDate fecha, Usuario pagador,String categoria, Map<String, Double> porcentajes) {
+       /* try {*/
             if (cuenta == null || pagador == null || porcentajes == null) return false;
             
-            GastoCompartido g = new GastoCompartido(concepto, cantidad, fecha, cuenta, pagador, porcentajes);
+            Optional<Gasto> g = libroDeCuenta.crearGastoCompartido(cuenta, cantidad, fecha, pagador, concepto, categoria, porcentajes);
             
-            repoGastos.addGasto(g); 
-            return true;
-        } catch (Exception e) {
+           return g.isPresent();
+        /*} catch (Exception e) {
             e.printStackTrace();
             return false;
-        }
+        }*/
     }
 
     private double calcularMiParte(Gasto g) {
@@ -327,6 +337,13 @@ public class AppControlGastos {
         return 0.0;
     }
     
+    public Set<String> getNombresCategorias(){
+    	return libroDeCuenta.getNombresCategorias();
+    }
+    
+    public boolean existeCategoria(String categoria) {
+    	return libroDeCuenta.existeCategoria(categoria);
+    }
 
     public Set<Gasto> buscarGasto(BuscadorGastos buscador){
     	return libroDeCuenta.buscarGasto(buscador);
@@ -344,7 +361,10 @@ public class AppControlGastos {
     	return new BuscadorPorCantidad(cotaInferior, cotaSuperior);
     }
     
-    public BuscadorGastos crearBuscadorCategoria(Categoria categoria) {
+    public BuscadorGastos crearBuscadorCategoria(String nombreCategoria) {
+    	Categoria categoria = libroDeCuenta.getCategoria(nombreCategoria);
+    	if(categoria == null)
+    		return null;
     	return new BuscadorPorCategoria(categoria);
     }
     
@@ -380,7 +400,10 @@ public class AppControlGastos {
 	 * @param categoria La categoría a filtrar. 
 	 * @return Un objeto BuscadorGastos 
 	 */
-	public BuscadorGastos BuscadorAddCategoria(BuscadorGastos bBase, Categoria categoria) {
+	public BuscadorGastos BuscadorAddCategoria(BuscadorGastos bBase, String nombreCategoria) {
+		Categoria categoria = libroDeCuenta.getCategoria(nombreCategoria);
+    	if(categoria == null)
+    		return null;
 		return bBase.addCategoria(categoria);
 	}
 	

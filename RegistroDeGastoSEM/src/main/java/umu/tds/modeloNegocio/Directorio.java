@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import umu.tds.controlador.AppControlGastos;
 import umu.tds.repository.RepositorioUsuarios;
 import umu.tds.repository.impl.RepositorioUsuariosJSON;
 
@@ -21,11 +22,15 @@ public class Directorio {
 
     private Directorio() {	// Constructor privado. Antes público. Marco.
         this.usuarios = new HashMap<>();
-        this.repositorio = new RepositorioUsuariosJSON();
+        this.repositorio = AppControlGastos.getRepoUsuarios(); /*new RepositorioUsuariosJSON();*/
         
         List<Usuario> listaCargada = repositorio.getUsuarios();
         for(Usuario u : listaCargada) {
             this.usuarios.put(u.getNombre(), u);
+        }
+        if(!usuarios.containsKey(NOMBRE_PROPIETARIO)) {
+        	usuarios.put(NOMBRE_PROPIETARIO, usuarioPropietario);
+        	repositorio.guardarUsuarios(usuarios.values());
         }
     }
     

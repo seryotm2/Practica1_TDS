@@ -7,13 +7,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+@JsonIdentityInfo(
+	    generator = ObjectIdGenerators.PropertyGenerator.class,
+	    property = "id" 
+	)
 public class CuentaCompartida {
     
     private String nombre;
-    
+    //@JsonIdentityReference(alwaysAsId = true)
     private List<Usuario> participantes;
     private List<Gasto> gastos;
     

@@ -27,10 +27,9 @@ public class BuscadorConCantidad extends BuscadorCompuesto{
 	@Override
 	public Set<Gasto> buscar(Collection<Gasto> gastos) {
 		Set<Gasto> res = super.buscar(gastos);
-		res.addAll(gastos.stream()
+		return res.stream()
 				.filter(g-> g.isCantidadEntre(cotaInferior, cotaSuperior))
-				.collect(Collectors.toSet()));
-		return res;
+				.collect(Collectors.toSet());
 	}
 
 }

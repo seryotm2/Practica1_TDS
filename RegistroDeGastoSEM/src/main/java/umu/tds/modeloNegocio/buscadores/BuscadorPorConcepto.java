@@ -17,7 +17,7 @@ public class BuscadorPorConcepto extends BuscadorGastos{
 	@Override
 	public Set<Gasto> buscar(Collection<Gasto> gastos) {
 		return gastos.stream()
-				.filter(g-> g.getConcepto().trim().toLowerCase().equals(concepto))
+				.filter(g-> g.getConcepto().trim().toLowerCase().contains(concepto))
 				.collect(Collectors.toSet());
 	}
 	

@@ -5,7 +5,8 @@ import java.util.Map;
 
 public class GastoCompartido extends Gasto {
     
-    private CuentaCompartida cuenta;
+    //private CuentaCompartida cuenta;
+    private String cuenta;
     private Usuario pagador;
     
     private Map<String, Double> porcentajes; 
@@ -18,13 +19,13 @@ public class GastoCompartido extends Gasto {
 
     		this.setUsuario(pagador); 
 
-    		this.cuenta = cuenta;
+    		this.cuenta = cuenta.getNombre();
     		this.pagador = pagador;
     		this.porcentajes = porcentajes;
     }
     
 
-    public CuentaCompartida getCuenta() { return cuenta; }
+    public String getCuenta() { return cuenta; }
     public Usuario getPagador() { return pagador; }
     public Map<String, Double> getPorcentajes() { return porcentajes; }
 

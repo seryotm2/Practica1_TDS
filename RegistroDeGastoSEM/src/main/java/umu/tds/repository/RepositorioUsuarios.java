@@ -1,8 +1,8 @@
 package umu.tds.repository;
 
+import java.util.Collection;
 import java.util.List;
 
-import umu.tds.modeloNegocio.CuentaCompartida;
 import umu.tds.modeloNegocio.Usuario;
 
 public interface RepositorioUsuarios {
@@ -18,6 +18,6 @@ public interface RepositorioUsuarios {
 	 * @return Lista de cuentas compartidas.
 	 */
 	
-	void guardarUsuarios(List<Usuario> usuarios);
+	void guardarUsuarios(Collection<Usuario> usuarios);
 	
 }

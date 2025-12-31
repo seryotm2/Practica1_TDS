@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -41,6 +42,7 @@ public class LibroDeCuenta implements SujetoGasto{
 		
 		// Siempre hay una catogoría por defecto que se asignará a los gastos sin categoría especificada.
 		categorias.put(GASTOS_GENERALES, new Categoria(GASTOS_GENERALES));
+		AppControlGastos.getRepoGastos().registrarCategoria(GASTOS_GENERALES);
 		
 		obs = new ArrayList<ObservadorGasto>();
 	}
@@ -61,34 +63,34 @@ public class LibroDeCuenta implements SujetoGasto{
 	
     
 	static private void cargarCategorias() {
-		Set<String> catnombres = AppControlGastos.getInstancia().getRepoGastos().getIdCategorias();
+		Set<String> catnombres = AppControlGastos.getRepoGastos().getIdCategorias();
 		if(catnombres.isEmpty()) return;
 		catnombres.forEach(cn-> instancia.categorias.put(cn, new Categoria(cn)));
 	}
 	
 	static private void recuperarGastoGlobal() {
-		Set<Gasto> historico = AppControlGastos.getInstancia().getRepoGastos().getHistorico();
+		Set<Gasto> historico = AppControlGastos.getRepoGastos().getHistorico();
 		instancia.gastoGlobal = historico.stream()
 			.filter(g -> g.getUsuario() != null && g.getUsuario().equals(Directorio.getUsuarioPropietario()))
 			.collect(Collectors.summingDouble(Gasto::getCantidad));
 	}
 	
 	static private void cargarGastosDelMes() {
-		Set<Gasto> historico = AppControlGastos.getInstancia().getRepoGastos().getHistorico();
+		Set<Gasto> historico = AppControlGastos.getRepoGastos().getHistorico();
 		historico.stream()
 			.filter(Gasto::realizadoEnEsteMes)
 			.forEach(g-> instancia.gastosDelMes.add(g));
 	}
 	
 	static private void cargarGastosDeLaSemana() {
-		Set<Gasto> historico = AppControlGastos.getInstancia().getRepoGastos().getHistorico();
+		Set<Gasto> historico = AppControlGastos.getRepoGastos().getHistorico();
 		historico.stream()
 			.filter(Gasto::realizadoEnEstaSemana)
 			.forEach(g-> instancia.gastosDeLaSemana.add(g));
 	}
 	
 	static private void cargarCuentas() {
-		instancia.setCuentasCompartidas(AppControlGastos.getInstancia().getRepoGastos()
+		instancia.setCuentasCompartidas(AppControlGastos.getRepoGastos()
 				.getCuentas());
 	}
 
@@ -108,12 +110,12 @@ public class LibroDeCuenta implements SujetoGasto{
     
     public void addCuentaCompartida(CuentaCompartida cuenta) {
         cuentasCompartidas.add(cuenta);
-        AppControlGastos.getInstancia().getRepoGastos().updateCuentas(cuentasCompartidas);
+        AppControlGastos.getRepoGastos().updateCuentas(cuentasCompartidas);
     }
 
     public List<CuentaCompartida> getCuentasCompartidas() {
     	if(cuentasCompartidas.isEmpty())
-    		cuentasCompartidas = AppControlGastos.getInstancia().getRepoGastos().getCuentas();
+    		cuentasCompartidas = AppControlGastos.getRepoGastos().getCuentas();
         return Collections.unmodifiableList(cuentasCompartidas);
     }
     
@@ -141,14 +143,42 @@ public class LibroDeCuenta implements SujetoGasto{
                  if(newGasto.realizadoEnEstaSemana())
                      addIntoGastosDeLaSemana(newGasto);
              }
-             AppControlGastos.getInstancia().getRepoGastos().updateHistorico(newGasto);
+             AppControlGastos.getRepoGastos().updateHistorico(newGasto);
              notificarObservadores();
          }
         return newGastoOpt;
     }
 	
 	
-	
+    public Optional<Gasto> crearGastoCompartido(CuentaCompartida cuenta, double cantidad, LocalDate fecha, Usuario usuario,
+    		String concepto, String categoria, Map<String, Double> porcentajes) {
+    	
+    	if(!existeCategoria(categoria))
+            return Optional.empty();
+    	
+    	// Creamos el gasto y lo añadimos a la categoría
+        Optional<Gasto> newGastoOpt = categorias.get(categoria)
+        		.addNewGastoCompartido(cuenta, cantidad, fecha, usuario, concepto, porcentajes);
+        if(newGastoOpt.isPresent()) {
+            Gasto newGasto = newGastoOpt.get();
+            
+            boolean esGastoPropio = usuario.equals(AppControlGastos.getInstancia().getUsuarioActual());
+
+            if (esGastoPropio) {
+                gastoGlobal += newGasto.getCantidad();
+                
+                if(newGasto.realizadoEnEsteMes())
+                    addIntoGastosDelMes(newGasto);
+                
+                if(newGasto.realizadoEnEstaSemana())
+                    addIntoGastosDeLaSemana(newGasto);
+            }
+            AppControlGastos.getRepoGastos().updateHistorico(newGasto);
+            notificarObservadores();
+        }
+       return newGastoOpt;
+        
+    }
 	
 	
 	
@@ -188,11 +218,15 @@ public class LibroDeCuenta implements SujetoGasto{
 		return Collections.unmodifiableSet(gastosDelMes);
 	}
 	
+	public Categoria getCategoria(String nombreCategoria) {
+		return categorias.get(nombreCategoria);
+	}
+	
 	public boolean crearCategoria(String nombre) {
 		if(categorias.containsKey(nombre))
 			return false;
 		categorias.put(nombre, new Categoria(nombre));
-		AppControlGastos.getInstancia().getRepoGastos().registrarCategoria(nombre);
+		AppControlGastos.getRepoGastos().registrarCategoria(nombre);
 		return true;
 	}
 	
@@ -273,10 +307,10 @@ public class LibroDeCuenta implements SujetoGasto{
 					.collect(Collectors.toList());
 		}
 		return list; */
-		return AppControlGastos.getInstancia().getRepoGastos()
+		return AppControlGastos.getRepoGastos()
 				.getHistorico().stream()
-				.limit(n)
 				.sorted(Comparator.reverseOrder())
+				.limit(n)
 				.collect(Collectors.toList());
 	}
 	
@@ -295,13 +329,13 @@ public class LibroDeCuenta implements SujetoGasto{
 					gastosDelMes.remove(e);
 				gastoGlobal -= e.getCantidad();
 			}
-			AppControlGastos.getInstancia().getRepoGastos().eliminarGasto(e);
+			AppControlGastos.getRepoGastos().eliminarGasto(e);
 		}
 		return resultado;
 	}
 	
 	public Set<Gasto> buscarGasto(BuscadorGastos buscador){
-		return buscador.buscar(AppControlGastos.getInstancia().getRepoGastos().getHistorico());
+		return buscador.buscar(AppControlGastos.getRepoGastos().getHistorico());
 	}
 	
 	/**
@@ -325,7 +359,7 @@ public class LibroDeCuenta implements SujetoGasto{
 	        return false;
 	    }
 	    antigua.eliminarGasto(g);
-	    AppControlGastos.getInstancia().getRepoGastos().updateHistorico(g);
+	    AppControlGastos.getRepoGastos().updateHistorico(g);
 
 	    return true;
 	}
@@ -347,11 +381,11 @@ public class LibroDeCuenta implements SujetoGasto{
 		gCat.eliminarGasto(g);
 		gastosDeLaSemana.remove(g);
 		gastosDelMes.remove(g);
-		AppControlGastos.getInstancia().getRepoGastos().eliminarGasto(g);
+		AppControlGastos.getRepoGastos().eliminarGasto(g);
 		Optional<Gasto> nuevo = gCat.addNewGasto(g.getCantidad(), newFecha, g.getUsuario(), g.getConcepto());
 		if(nuevo.isPresent()) {
 			g = nuevo.get();
-			AppControlGastos.getInstancia().getRepoGastos().updateHistorico(g);
+			AppControlGastos.getRepoGastos().updateHistorico(g);
 			if(g.realizadoEnEsteMes())
 				addIntoGastosDelMes(g);
 			if(g.realizadoEnEstaSemana())

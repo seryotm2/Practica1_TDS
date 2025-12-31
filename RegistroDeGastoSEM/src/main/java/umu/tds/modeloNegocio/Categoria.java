@@ -2,24 +2,20 @@ package umu.tds.modeloNegocio;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
-
 import umu.tds.controlador.AppControlGastos;
 
-@JsonIdentityInfo(
+/*@JsonIdentityInfo(
 	    generator = ObjectIdGenerators.PropertyGenerator.class,
 	    property = "nombreCategoria"
-	)
+	)*/
 
 
 public class Categoria {
@@ -80,10 +76,28 @@ public class Categoria {
 			boolean esGastoPropio = usuario.equals(AppControlGastos.getInstancia().getUsuarioActual());
 			if(esGastoPropio) 
 				gastoTotal += newGasto.getCantidad();
-			AppControlGastos.getInstancia().getRepoGastos().updateGastos(this);
+			AppControlGastos.getRepoGastos().updateGastos(this);
 			return Optional.of(newGasto);
 		}		
 		return Optional.empty();		
+	}
+	
+	public Optional<Gasto> addNewGastoCompartido(CuentaCompartida cuenta, double cantidad, LocalDate fecha, 
+			Usuario usuario, String concepto, Map<String, Double> porcentajes){
+		
+		Gasto newGasto = new GastoCompartido(concepto, cantidad, fecha, cuenta, usuario, porcentajes);
+		newGasto.setCategoria(this);
+		
+		if(!cargado) {recuperarEstado();}
+		
+		if(gastos.add(newGasto)) {
+			boolean esGastoPropio = usuario.equals(AppControlGastos.getInstancia().getUsuarioActual());
+			if(esGastoPropio) 
+				gastoTotal += newGasto.getCantidad();
+			AppControlGastos.getRepoGastos().updateGastos(this);
+			return Optional.of(newGasto);
+		}		
+		return Optional.empty();
 	}
 	
 	public boolean addGasto(Gasto g) {
@@ -92,7 +106,7 @@ public class Categoria {
 		if(!cargado) {recuperarEstado();}
 		boolean resultado = gastos.add(g);
 		if(resultado)
-			AppControlGastos.getInstancia().getRepoGastos().updateGastos(this);
+			AppControlGastos.getRepoGastos().updateGastos(this);
 		return resultado;
 	}
 
@@ -163,7 +177,7 @@ public class Categoria {
 			boolean esGastoPropio = e.getUsuario().equals(AppControlGastos.getInstancia().getUsuarioActual());
 			if(esGastoPropio)
 				this.gastoTotal -= e.getCantidad();
-			AppControlGastos.getInstancia().getRepoGastos().updateGastos(this);
+			AppControlGastos.getRepoGastos().updateGastos(this);
 		}
 		return resultado;
 	}
@@ -187,7 +201,7 @@ public class Categoria {
 	}
 	
 	private void recuperarEstado() {
-		this.gastos.addAll(AppControlGastos.getInstancia().getRepoGastos().getGastos(this));
+		this.gastos.addAll(AppControlGastos.getRepoGastos().getGastos(this));
 		this.gastoTotal = gastos.stream()
 				.filter(g-> g.getUsuario().equals(Directorio.getUsuarioPropietario()))
 				.collect(Collectors.summingDouble(Gasto::getCantidad));

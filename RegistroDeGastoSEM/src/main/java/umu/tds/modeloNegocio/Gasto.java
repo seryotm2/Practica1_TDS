@@ -7,19 +7,16 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 
 
 @JsonTypeInfo(
 	    use = JsonTypeInfo.Id.NAME, 
 	    include = JsonTypeInfo.As.PROPERTY, 
-	    property = "type",
-	    defaultImpl = GastoIndividual.class 
+	    property = "type"//,
+	   // defaultImpl = GastoIndividual.class 
 	)
 	@JsonSubTypes({
 	    @JsonSubTypes.Type(value = GastoIndividual.class, name = "individual"),
@@ -30,9 +27,10 @@ public abstract class Gasto implements Comparable<Gasto>{
 	private String concepto;
 	private double cantidad;
 	private LocalDate fecha;
-	private UUID id;
-	
+	private UUID id;	
 	private Categoria categoria;
+	private String usuarioId;
+	@JsonIgnore
 	private Usuario usuario;
 	
 	protected Gasto() {
@@ -55,17 +53,17 @@ public abstract class Gasto implements Comparable<Gasto>{
         this.id = id;
     }
     */
-	
+		
 	public String getConcepto() {
 		return concepto;
 	}
-	public void setConcepto(String concepto) {
+	void setConcepto(String concepto) {
 		this.concepto = concepto;
 	}
 	public double getCantidad() {
 		return cantidad;
 	}
-	public void setCantidad(double cantidad) {
+	void setCantidad(double cantidad) {
 		this.cantidad = cantidad;
 	}
 	public LocalDate getFecha() {
@@ -86,6 +84,13 @@ public abstract class Gasto implements Comparable<Gasto>{
 		this.categoria = categoria;
 	}
 	
+	public String getUsuarioId() {
+		return usuarioId;
+	}
+
+	public void setUsuarioId(String usuarioId) {
+		this.usuarioId = usuarioId;
+	}
 	
 	public Usuario getUsuario() {
 		return usuario;
@@ -93,6 +98,7 @@ public abstract class Gasto implements Comparable<Gasto>{
 	
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
+		this.usuarioId = (usuario != null) ? usuario.getNombre() : "";
 	}
 	
 	/**

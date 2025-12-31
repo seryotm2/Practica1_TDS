@@ -24,10 +24,9 @@ public class BuscadorConConcepto extends BuscadorCompuesto{
 	@Override
 	public Set<Gasto> buscar(Collection<Gasto> gastos) {
 		Set<Gasto> res = super.buscar(gastos);
-		res.addAll(gastos.stream()
-				.filter(g-> g.getConcepto().trim().toLowerCase().equals(concepto))
-				.collect(Collectors.toSet()));
-		return res;
+		return res.stream()
+				.filter(g-> g.getConcepto().trim().toLowerCase().contains(concepto))
+				.collect(Collectors.toSet());
 	}
 	
 }

@@ -9,12 +9,14 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="500.0" prefWidth="600.0" style="-fx-background-color: #F0FFFF; -fx-border-color: black;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="umu.tds.apps.AppControlGastos.view.AnadirGastoCompartidoController">
+<BorderPane prefHeight="500.0" prefWidth="600.0" style="-fx-background-color: #F0FFFF; -fx-border-color: black;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="umu.tds.apps.AppControlGastos.view.AnadirGastoCompartidoController">
    <top>
       <VBox alignment="CENTER" prefHeight="60.0" style="-fx-background-color: #00FF00; -fx-border-color: black;" BorderPane.alignment="CENTER">
          <children>
@@ -35,8 +37,8 @@
          <children>
             <GridPane hgap="10.0" vgap="10.0">
                <children>
-                  <Label text="Cuenta / Grupo:" GridPane.rowIndex="0" />
-                  <ComboBox fx:id="comboCuentas" prefWidth="250.0" promptText="Selecciona grupo..." GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                  <Label text="Cuenta / Grupo:" />
+                  <ComboBox fx:id="comboCuentas" prefWidth="250.0" promptText="Selecciona grupo..." GridPane.columnIndex="1" />
       
                   <Label text="Pagado por:" GridPane.rowIndex="1" />
                   <ComboBox fx:id="comboPagador" prefWidth="250.0" promptText="Quién pagó..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
@@ -44,12 +46,26 @@
                   <Label text="Concepto:" GridPane.rowIndex="2" />
                   <TextField fx:id="txtConcepto" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                   
-                  <Label text="Total (€):" GridPane.rowIndex="3" />
-                  <TextField fx:id="txtCantidad" promptText="0.00" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <Label text="Total (€):" GridPane.rowIndex="4" />
+                  <TextField fx:id="txtCantidad" promptText="0.00" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                   
-                  <Label text="Fecha:" GridPane.rowIndex="4" />
-                  <DatePicker fx:id="datePickerFecha" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <Label text="Fecha:" GridPane.rowIndex="5" />
+                  <DatePicker fx:id="datePickerFecha" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <ComboBox fx:id="comboCategoria" prefHeight="26.0" prefWidth="249.0" promptText="Categoría del gasto" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <Label text="Cargoría" GridPane.rowIndex="3" />
                </children>
+               <columnConstraints>
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
             </GridPane>
             
             <Label text="Reparto de costes (Edita los % en la tabla):">
@@ -61,7 +77,7 @@
                </VBox.margin>
             </Label>
             
-            <TableView fx:id="tablaReparto" editable="true" prefHeight="200.0" style="-fx-border-color: #999;" VBox.vgrow="ALWAYS">
+            <TableView fx:id="tablaReparto" editable="true" prefHeight="104.0" prefWidth="558.0" style="-fx-border-color: #999;" VBox.vgrow="ALWAYS">
               <columns>
                 <TableColumn fx:id="colNombre" prefWidth="200.0" text="Participante" />
                 <TableColumn fx:id="colPorcentaje" prefWidth="100.0" text="Porcentaje (%)" />
@@ -75,7 +91,7 @@
    </center>
    
    <bottom>
-      <HBox alignment="CENTER" spacing="20.0" style="-fx-border-color: black; -fx-background-color: #F0FFFF;" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" prefHeight="48.0" prefWidth="598.0" spacing="20.0" style="-fx-border-color: black; -fx-background-color: #F0FFFF;" BorderPane.alignment="CENTER">
          <padding>
             <Insets bottom="15.0" top="15.0" />
          </padding>

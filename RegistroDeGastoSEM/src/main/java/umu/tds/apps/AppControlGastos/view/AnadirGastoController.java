@@ -17,7 +17,7 @@ public class AnadirGastoController {
     @FXML
     public void initialize() {
         datePickerFecha.setValue(LocalDate.now());
-        comboCategoria.getItems().addAll(AppControlGastos.getInstancia().getRepoGastos().getIdCategorias());
+        comboCategoria.getItems().addAll(AppControlGastos.getInstancia().getNombresCategorias());
     }
 
     @FXML

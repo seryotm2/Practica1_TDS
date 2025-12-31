@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,6 +18,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import umu.tds.modeloNegocio.Categoria;
 import umu.tds.modeloNegocio.CuentaCompartida;
+import umu.tds.modeloNegocio.Directorio;
 import umu.tds.modeloNegocio.Gasto;
 import umu.tds.repository.RepositorioGastos;
 
@@ -64,6 +66,7 @@ public class RepositorioGastosJSONImpl implements RepositorioGastos{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		gastos.addAll(resolverUsuarios(gastos));
 		return gastos;
 	}
 
@@ -74,7 +77,7 @@ public class RepositorioGastosJSONImpl implements RepositorioGastos{
 		exceptionIfNofile(ficheroCat);
 		Set<Gasto> gastos = categoria.getGastos();
 		try {
-			mapper.writerWithDefaultPrettyPrinter().writeValue(ficheroCat.toFile(), gastos);
+			mapper.writerFor(new TypeReference<Set<Gasto>>() {}).withDefaultPrettyPrinter().writeValue(ficheroCat.toFile(), gastos);
 		} catch (Exception e) {e.printStackTrace();} 		
 	}
 
@@ -83,7 +86,7 @@ public class RepositorioGastosJSONImpl implements RepositorioGastos{
 		if(historial.remove(gasto)) {
 			Path ficheroHis = Paths.get(HISTORIAL_PATH);
 			try {
-				mapper.writerWithDefaultPrettyPrinter().writeValue(ficheroHis.toFile(), historial);
+				mapper.writerFor(new TypeReference<Set<Gasto>>() {}).withDefaultPrettyPrinter().writeValue(ficheroHis.toFile(), historial);
 			} catch (Exception e) {e.printStackTrace();} 
 		}
 	}
@@ -99,6 +102,7 @@ public class RepositorioGastosJSONImpl implements RepositorioGastos{
 			    return new TreeSet<>();
 			historial.addAll(mapper.readValue(ficheroHis.toFile(), new TypeReference<TreeSet<Gasto>>() {}));
 		} catch (Exception e) {e.printStackTrace();}
+		historial.addAll(resolverUsuarios(historial));
 		return historial;
 	}
 	
@@ -108,7 +112,7 @@ public class RepositorioGastosJSONImpl implements RepositorioGastos{
 		historial.add(newGasto);
 		Path ficheroHis = Paths.get(HISTORIAL_PATH);
 		try {
-			mapper.writerWithDefaultPrettyPrinter().writeValue(ficheroHis.toFile(), historial);
+			mapper.writerFor(new TypeReference<Set<Gasto>>() {}).withDefaultPrettyPrinter().writeValue(ficheroHis.toFile(), historial);
 		} catch (Exception e) {e.printStackTrace();}	
 	}
 
@@ -132,7 +136,7 @@ public class RepositorioGastosJSONImpl implements RepositorioGastos{
 		Path catList = Paths.get(CATEGORY_LIST_PATH );
 		Set<String> cat = new TreeSet<>();
 		if(!Files.exists(catList)) {
-			try {
+			try {	//Si no existe, se crea el fichero
 				Files.createFile(catList);
 			} catch (IOException e) {e.printStackTrace();}
 			cat.add(nombreCategoria);
@@ -140,7 +144,7 @@ public class RepositorioGastosJSONImpl implements RepositorioGastos{
 				mapper.writerWithDefaultPrettyPrinter().writeValue(catList.toFile(), cat);
 			} catch (Exception e) {e.printStackTrace();}
 		}
-		else {
+		else {	// Si existe, se actualiza la lista de categorías
 			cat = getIdCategorias();
 			if(cat.add(nombreCategoria)) {
 				try {	
@@ -148,9 +152,12 @@ public class RepositorioGastosJSONImpl implements RepositorioGastos{
 				} catch (Exception e) {e.printStackTrace();}
 			}
 		}
-		try {//Creación del fichero propio de la categoría
-			Files.createFile(Paths.get(CATEGORIES_PATH + "/"+ nombreCategoria + ".json"));
-		} catch (IOException e) {e.printStackTrace();}
+		Path catFile = Paths.get(CATEGORIES_PATH + "/"+ nombreCategoria + ".json");
+		if(!Files.exists(catFile)) {
+			try {//Creación del fichero propio de la categoría
+				Files.createFile(Paths.get(CATEGORIES_PATH + "/"+ nombreCategoria + ".json"));
+			} catch (IOException e) {e.printStackTrace();}
+		}
 	}
 	
 	private void exceptionIfNofile(Path pathFile) {
@@ -199,5 +206,20 @@ public class RepositorioGastosJSONImpl implements RepositorioGastos{
             e.printStackTrace();
         }
     }
+	
+	private Set<Gasto> resolverUsuarios(Collection<Gasto> gastos) {
+		if(gastos.isEmpty())
+			return new TreeSet<>();
+		 Directorio dir = Directorio.getInstancia();
+		 Set<Gasto> res = new TreeSet<>();
+		for(Gasto gAct: gastos) {
+			if (gAct.getUsuarioId() != null && gAct.getUsuario() == null) {
+                dir.buscarUsuario(gAct.getUsuarioId())
+                   .ifPresent(gAct::setUsuario);
+                res.add(gAct);
+            }
+		}
+		return res;
+	}
 
 }

@@ -104,6 +104,11 @@ public class MenuPrincipalController {
             }
         }
     }
+    
+    @FXML
+    public void abrirBusqueda(ActionEvent event) {
+    	abrirVentanaModal("/umu/tds/view/PanelDeBusqueda.fxml", "Panel de Búsqueda", event, false);
+    }
 
     @FXML
     public void abrirAyuda(ActionEvent event) {
