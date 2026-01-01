@@ -13,6 +13,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import umu.tds.controlador.AppControlGastos;
+import umu.tds.modeloNegocio.Alerta;
 import umu.tds.modeloNegocio.Gasto;
 
 import java.io.File;
@@ -55,6 +56,23 @@ public class MenuPrincipalController {
                 g.getCantidad()
             );
             listaUltimosGastos.getItems().add(0, texto);
+        }
+        
+        List<Alerta> notificaciones = controlador.obtenerNotificaciones();
+        
+        if(!notificaciones.isEmpty()) {
+            StringBuilder mensaje = new StringBuilder();
+            
+            for (Alerta a : notificaciones) {
+                mensaje.append("• ").append(a.getDescripcion()).append("\n");
+            }
+            
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Aviso de Gasto");
+            alert.setHeaderText("Has superado los siguientes límites:");
+            alert.setContentText(mensaje.toString());
+            
+            alert.showAndWait();
         }
     }
 
@@ -119,6 +137,22 @@ public class MenuPrincipalController {
     public void abrirCreditos(ActionEvent event) {
         cambiarEscena(event, "/umu/tds/view/creditos.fxml");
     }
+    
+    @FXML
+    public void abrirCrearCategoria(ActionEvent event) {
+        abrirVentanaModal("/umu/tds/view/crear_categoria.fxml", "Nueva Categoría", event, false);
+    }
+    
+    @FXML
+    public void abrirAlertas(ActionEvent event) {
+        abrirVentanaModal("/umu/tds/view/ver_alertas.fxml", "Mis Notificaciones", event, false);
+    }
+    
+    @FXML
+    public void abrirCrearAlerta(ActionEvent event) {
+        abrirVentanaModal("/umu/tds/view/crear_alerta.fxml", "Crear Nueva Alerta", event, false);
+    }
+    
 
     private void abrirVentanaModal(String fxml, String titulo, ActionEvent event, boolean actualizarAlVolver) {
         try {

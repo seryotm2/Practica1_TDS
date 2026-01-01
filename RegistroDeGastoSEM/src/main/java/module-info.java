@@ -10,6 +10,12 @@ module umu.tds.apps.RegistroDeGastoSEM {
 
     opens umu.tds.apps.AppControlGastos.view to javafx.fxml;
     
+    
     opens umu.tds.modeloNegocio to com.fasterxml.jackson.databind;
+    
+    opens umu.tds.modeloNegocio.AlertasEstrategia to com.fasterxml.jackson.databind;
+    
+    opens umu.tds.apps.AppControlGastos to javafx.fxml;
+    
     exports umu.tds.modeloNegocio;
 }

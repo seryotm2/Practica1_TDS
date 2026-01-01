@@ -16,7 +16,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import umu.tds.modeloNegocio.Alerta;
 import umu.tds.repository.RepositorioAlertas;
-//Por hacer
+
+
+
+
+
 public class RepositorioAlertasJSONImpl implements RepositorioAlertas{
 
 	private static final String REPOSITORY_PATH = "data/alertas";
@@ -26,20 +30,36 @@ public class RepositorioAlertasJSONImpl implements RepositorioAlertas{
 	private List<Alerta> alertas;
 	private List<Alerta> notifs;
 
-    public RepositorioAlertasJSONImpl() {
+	public RepositorioAlertasJSONImpl() {
+        this.alertas = new ArrayList<>();
+        this.notifs = new ArrayList<>();
+        
         mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
-        Path pathDir = Paths.get(REPOSITORY_PATH);
-        if (!Files.exists(pathDir)) {
-            try {
+        
+        try {
+            Path pathDir = Paths.get(REPOSITORY_PATH);
+            if (!Files.exists(pathDir)) {
                 Files.createDirectories(pathDir);
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+            
+            Path pathAlertas = Paths.get(FICHERO_ALERTAS);
+            if (!Files.exists(pathAlertas)) {
+                Files.createFile(pathAlertas);
+            }
+
+            Path pathNotifs = Paths.get(FICHERO_NOTIFICACIONES);
+            if (!Files.exists(pathNotifs)) {
+                Files.createFile(pathNotifs);
+            }
+            
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-		getAlertasH();
-		getNotifsH();
+
+        getAlertasH();
+        getNotifsH();
     }
 
     public List<Alerta> getAlertas() {
@@ -73,38 +93,32 @@ public class RepositorioAlertasJSONImpl implements RepositorioAlertas{
     }
 
 
+    @Override
     public void agregarAlerta(Alerta alerta) {
-    	try {
-            mapper.writeValue(new File(FICHERO_ALERTAS), alerta);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        alertas.add(alerta);
+        guardarLista(FICHERO_ALERTAS, alertas);
     }
     
+    @Override
     public void agregarNotificacion(Alerta alerta) {
-    	try {
-            mapper.writeValue(new File(FICHERO_NOTIFICACIONES), alerta);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(!notifs.contains(alerta)) {
+            notifs.add(alerta);
+            guardarLista(FICHERO_NOTIFICACIONES, notifs);
         }
     }
     
+    @Override
     public void borrarAlerta(Alerta alerta) {
-    	if(alertas.remove(alerta)) {
-			Path ficheroHis = Paths.get(FICHERO_ALERTAS);
-			try {
-				mapper.writerWithDefaultPrettyPrinter().writeValue(ficheroHis.toFile(), alertas);
-			} catch (Exception e) {e.printStackTrace();} 
-		}
+        if(alertas.remove(alerta)) {
+            guardarLista(FICHERO_ALERTAS, alertas);
+        }
     }
     
+    @Override
     public void borrarNotificacion(Alerta alerta) {
-    	if(notifs.remove(alerta)) {
-			Path ficheroHis = Paths.get(FICHERO_ALERTAS);
-			try {
-				mapper.writerWithDefaultPrettyPrinter().writeValue(ficheroHis.toFile(), notifs);
-			} catch (Exception e) {e.printStackTrace();} 
-		}
+        if(notifs.remove(alerta)) {
+            guardarLista(FICHERO_NOTIFICACIONES, notifs);
+        }
     }
     
     public List<Alerta> getAlertasH() {
@@ -138,4 +152,12 @@ public class RepositorioAlertasJSONImpl implements RepositorioAlertas{
 			throw new IllegalStateException("No existe " + pathFile + "en memoria");
 		}
 	}
+    
+    private void guardarLista(String path, List<Alerta> lista) {
+        try {
+            mapper.writeValue(new java.io.File(path), lista);
+        } catch (IOException e) { 
+            e.printStackTrace(); 
+        }
+    }
 }

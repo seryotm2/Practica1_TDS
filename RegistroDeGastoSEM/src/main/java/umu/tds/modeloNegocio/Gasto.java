@@ -57,20 +57,20 @@ public abstract class Gasto implements Comparable<Gasto>{
 	public String getConcepto() {
 		return concepto;
 	}
-	void setConcepto(String concepto) {
+	public void setConcepto(String concepto) {
 		this.concepto = concepto;
 	}
 	public double getCantidad() {
 		return cantidad;
 	}
-	void setCantidad(double cantidad) {
+	public void setCantidad(double cantidad) {
 		this.cantidad = cantidad;
 	}
 	public LocalDate getFecha() {
 		return fecha;
 	}
 	
-	void setFecha(LocalDate fecha) {
+	public void setFecha(LocalDate fecha) {
 		this.fecha = fecha;
 	}
 	
@@ -80,7 +80,7 @@ public abstract class Gasto implements Comparable<Gasto>{
 	}
 	
 
-	void setCategoria(Categoria categoria) {
+	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
 	}
 	

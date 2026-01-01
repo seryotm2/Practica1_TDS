@@ -7,25 +7,31 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import umu.tds.modeloNegocio.Alerta;
 import umu.tds.modeloNegocio.Categoria;
 import umu.tds.modeloNegocio.CuentaCompartida;
 import umu.tds.modeloNegocio.Directorio;
 import umu.tds.modeloNegocio.LibroDeCuenta;
 import umu.tds.modeloNegocio.Usuario;
+import umu.tds.modeloNegocio.AlertasEstrategia.AlertaMensual;
+import umu.tds.modeloNegocio.AlertasEstrategia.AlertaSemanal;
 import umu.tds.modeloNegocio.buscadores.BuscadorGastos;
 import umu.tds.modeloNegocio.buscadores.BuscadorPorCantidad;
 import umu.tds.modeloNegocio.buscadores.BuscadorPorCategoria;
 import umu.tds.modeloNegocio.buscadores.BuscadorPorConcepto;
 import umu.tds.modeloNegocio.buscadores.BuscadorPorFecha;
+import umu.tds.repository.RepositorioAlertas;
 import umu.tds.repository.RepositorioGastos;
 import umu.tds.modeloNegocio.importador.FactoriaImportadores;
 import umu.tds.modeloNegocio.importador.IImportador;
 import umu.tds.repository.RepositorioUsuarios;
+import umu.tds.repository.impl.RepositorioAlertasJSONImpl;
 import umu.tds.repository.impl.RepositorioGastosJSONImpl;
 import umu.tds.repository.impl.RepositorioUsuariosJSON;
 import umu.tds.modeloNegocio.Gasto;
 import umu.tds.modeloNegocio.GastoCompartido;
 import umu.tds.modeloNegocio.GastoIndividual;
+import umu.tds.modeloNegocio.GestorAlertas;
 
 public class AppControlGastos {
 	static private RepositorioUsuarios repositorioUsuarios = new RepositorioUsuariosJSON();
@@ -33,7 +39,7 @@ public class AppControlGastos {
     private static AppControlGastos instancia = null;  //singleton
     private Directorio directorio;
     private LibroDeCuenta libroDeCuenta;
-    
+    private GestorAlertas gestorAlertas;
 
     /*
     private AppControlGastos() {
@@ -50,6 +56,7 @@ public class AppControlGastos {
     private AppControlGastos() {
     	directorio = Directorio.getInstancia();
     	libroDeCuenta = LibroDeCuenta.getInstancia();
+    	gestorAlertas = GestorAlertas.getInstancia();
     }
 
     public static AppControlGastos getInstancia() {
@@ -419,5 +426,63 @@ public class AppControlGastos {
 	}
     
 
+    
+    public List<String> obtenerNombresCategorias() {
+        return new ArrayList<>(libroDeCuenta.getNombresCategorias());
+    }
+    
+
+    public boolean modificarGasto(Gasto gasto, String nuevoConcepto, double nuevaCantidad, 
+                                  LocalDate nuevaFecha, String nombreNuevaCategoria) {
+        if (gasto == null || nuevaCantidad <= 0 || nuevaFecha == null || nombreNuevaCategoria == null) return false;
+
+        try {
+            Categoria catAntigua = gasto.getCategoria();
+            Categoria catNueva = libroDeCuenta.getCategoria(nombreNuevaCategoria);
+            
+            if (catNueva == null) return false; 
+
+            repoGastos.eliminarGasto(gasto);
+            if (catAntigua != null) {
+                catAntigua.eliminarGasto(gasto);
+            }
+
+            gasto.setConcepto(nuevoConcepto);
+            gasto.setCantidad(nuevaCantidad);
+            gasto.setFecha(nuevaFecha);
+            gasto.setCategoria(catNueva);
+            catNueva.addGasto(gasto);
+            repoGastos.addGasto(gasto);
+            
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    
+    public boolean crearAlerta(String tipo, double limite, String nombreCategoria) {
+        Categoria cat = null;
+        if(nombreCategoria != null && !nombreCategoria.equals("Todas") && !nombreCategoria.isBlank()) {
+            cat = libroDeCuenta.getCategoria(nombreCategoria);
+            if(cat == null) return false;
+        }
+        
+        gestorAlertas.crearAlerta(tipo, limite, cat);
+        
+        return true;
+    }
+
+    public List<Alerta> obtenerNotificaciones() {
+        return gestorAlertas.getNotificaciones();
+    }
+
+    public void borrarNotificacion(umu.tds.modeloNegocio.Alerta a) {
+        gestorAlertas.borrarNotificacion(a);
+    }
+    
+    
+    
     
 }

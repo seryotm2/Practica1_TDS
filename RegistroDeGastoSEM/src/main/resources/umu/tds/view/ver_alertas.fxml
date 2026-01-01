@@ -9,13 +9,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="400.0" prefWidth="500.0" style="-fx-background-color: #F0FFFF; -fx-border-color: black;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="umu.tds.apps.AppControlGastos.view.EliminarDatosController">
+<BorderPane prefHeight="400.0" prefWidth="500.0" style="-fx-background-color: #F0FFFF; -fx-border-color: black;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="umu.tds.apps.AppControlGastos.view.VerAlertasController">
    <top>
-      <VBox alignment="CENTER" prefHeight="60.0" style="-fx-background-color: #FF6347; -fx-border-color: black;" BorderPane.alignment="CENTER">
+      <VBox alignment="CENTER" prefHeight="60.0" style="-fx-background-color: #FF4500; -fx-border-color: black;" BorderPane.alignment="CENTER">
          <children>
-            <Label text="Eliminar Gastos" textFill="WHITE">
+            <Label text="Notificaciones Activas" textFill="WHITE">
                <font>
-                  <Font name="DejaVu Serif Bold" size="24.0" />
+                  <Font name="DejaVu Serif Bold" size="22.0" />
                </font>
             </Label>
          </children>
@@ -28,17 +28,17 @@
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
          </padding>
          <children>
-            <Label text="Selecciona el gasto que quieres borrar:">
+            <Label text="Has superado el límite en:">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
             
-            <ListView fx:id="listaGastos" style="-fx-border-color: #FF6347;" VBox.vgrow="ALWAYS" />
+            <ListView fx:id="listaNotificaciones" style="-fx-border-color: #FF4500;" VBox.vgrow="ALWAYS" />
             
-            <Label text="* Esta acción no se puede deshacer." textFill="RED">
+            <Label text="* Selecciona una notificación para borrarla." textFill="#666666">
                <font>
-                  <Font name="System Italic" size="12.0" />
+                  <Font name="System Italic" size="11.0" />
                </font>
             </Label>
          </children>
@@ -51,22 +51,13 @@
             <Insets bottom="15.0" top="15.0" />
          </padding>
          <children>
-            <Button mnemonicParsing="false" onAction="#borrarGasto" style="-fx-background-color: #FF0000; -fx-border-color: black;" text="Eliminar Seleccionado" textFill="WHITE">
+            <Button mnemonicParsing="false" onAction="#borrarNotificacion" style="-fx-background-color: #FF0000; -fx-border-color: black;" text="Borrar Notificación" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
             </Button>
-            
-            <Button mnemonicParsing="false" onAction="#modificarGasto" style="-fx-background-color: #FFA500; -fx-border-color: black;" text="Modificar Seleccionado" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="13.0" />
-               </font>
-            </Button>
-
             <Button mnemonicParsing="false" onAction="#cerrar" style="-fx-background-color: #696969; -fx-border-color: black;" text="Cerrar" textFill="WHITE" />
          </children>
       </HBox>
-      
-      
    </bottom>
 </BorderPane>
