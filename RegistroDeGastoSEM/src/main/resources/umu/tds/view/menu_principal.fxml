@@ -125,9 +125,19 @@
                   </VBox>
                </children>
             </HBox>
-            
+            <Button mnemonicParsing="false" onAction="#abrirEstadisticas" prefHeight="40.0" prefWidth="250.0" style="-fx-background-color: #4682B4; -fx-border-color: black;" text="Ver Estadísticas (Gráficos)" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#abrirEstadoCuentas" prefHeight="40.0" prefWidth="250.0" style="-fx-background-color: #9932CC; -fx-border-color: black;" text="Ver Deudas de Grupo" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+            </Button>
          </children>
       </VBox>
+      
    </center>
    
    <bottom>
@@ -171,7 +181,7 @@
                </children>
             </VBox>
             
-            <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#abrirAlertas" prefHeight="35.0" style="-fx-background-color: #FF4500; -fx-border-color: black;" text="Ver Notificaciones" textFill="WHITE">
+            <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#abrirAlertas" prefHeight="35.0" style="-fx-background-color: #FF4500; -fx-border-color: black;" text="Alertas/Notificaciones" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>

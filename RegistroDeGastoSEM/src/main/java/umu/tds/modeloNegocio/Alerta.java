@@ -85,6 +85,25 @@ public abstract class Alerta{
     	this.fechaCreacion = d;
     }
 	 
-    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Alerta other = (Alerta) obj;
+        if (Double.compare(other.getLimiteGasto(), this.getLimiteGasto()) != 0) return false;
+        
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        long temp;
+        temp = Double.doubleToLongBits(getLimiteGasto());
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        result = prime * result + ((getCategoria() == null) ? 0 : getCategoria().getNombreCategoria().hashCode());
+        return result;
+    }
 	
 }

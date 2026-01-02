@@ -36,11 +36,7 @@
             
             <ListView fx:id="listaGastos" style="-fx-border-color: #FF6347;" VBox.vgrow="ALWAYS" />
             
-            <Label text="* Esta acción no se puede deshacer." textFill="RED">
-               <font>
-                  <Font name="System Italic" size="12.0" />
-               </font>
-            </Label>
+            
          </children>
       </VBox>
    </center>

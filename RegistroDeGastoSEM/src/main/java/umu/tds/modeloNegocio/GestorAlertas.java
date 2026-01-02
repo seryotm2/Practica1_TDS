@@ -1,6 +1,7 @@
 package umu.tds.modeloNegocio;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import umu.tds.modeloNegocio.AlertasEstrategia.AlertaMensual;
 import umu.tds.modeloNegocio.AlertasEstrategia.AlertaSemanal;
@@ -88,6 +89,8 @@ public class GestorAlertas implements ObservadorGasto{
         repositorio.borrarNotificacion(alerta);
     }
 	
+	
+	/*
 	public void notificar() {
         List<Alerta> alertas = repositorio.getAlertas();
         
@@ -101,9 +104,21 @@ public class GestorAlertas implements ObservadorGasto{
                 repositorio.agregarNotificacion(alerta);
             });
     }
+    */
+	
+	@Override
+    public void notificar() {
+        List<Alerta> alertasCumplidas = repositorio.getAlertas().stream()
+            .filter(Alerta::evaluar)
+            .collect(Collectors.toList());
 
-	public List<Alerta> getNuevasNotificaciones() {
-        return repositorio.getNotificaciones();
+        if (!alertasCumplidas.isEmpty()) {
+            alertasCumplidas.forEach(alerta -> {
+                alerta.setDisparada(true);
+                repositorio.agregarNotificacion(alerta); 
+                repositorio.borrarAlerta(alerta);        
+            });
+        }
     }
 		
 	

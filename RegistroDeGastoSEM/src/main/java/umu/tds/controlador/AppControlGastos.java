@@ -452,12 +452,28 @@ public class AppControlGastos {
     public List<Alerta> obtenerNotificaciones() {
         return gestorAlertas.getNotificaciones();
     }
+    
+    public List<Alerta> obtenerAlertas() {
+        return gestorAlertas.getAlertas();
+    }
+    
+    
 
     public void borrarNotificacion(umu.tds.modeloNegocio.Alerta a) {
         gestorAlertas.borrarNotificacion(a);
     }
     
+    public void borrarAlertaConfigurada(Alerta a) {
+        gestorAlertas.eliminarAlerta(a);
+    }
     
+    public List<Gasto> obtenerGastosSemana() {
+        return new ArrayList<>(libroDeCuenta.getGastosDeLaSemana());
+    }
+
+    public List<Gasto> obtenerGastosMes() {
+        return new ArrayList<>(libroDeCuenta.getGastosDelMes());
+    }
     
     
 }

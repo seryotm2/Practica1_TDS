@@ -109,17 +109,44 @@ public class RepositorioAlertasJSONImpl implements RepositorioAlertas{
         }
     }
     
+    /*
     @Override
     public void borrarAlerta(Alerta alerta) {
         if(alertas.remove(alerta)) {
             guardarLista(FICHERO_ALERTAS, alertas);
         }
     }
+    */
     
+    @Override
+    public void borrarAlerta(Alerta alerta) {
+        List<Alerta> actuales = getAlertas(); 
+        boolean borrado = actuales.removeIf(a -> a.equals(alerta));
+        
+        if (borrado) {
+            this.alertas = actuales; 
+            guardarLista(FICHERO_ALERTAS, actuales);
+        }
+    }
+    
+    /*
     @Override
     public void borrarNotificacion(Alerta alerta) {
         if(notifs.remove(alerta)) {
             guardarLista(FICHERO_NOTIFICACIONES, notifs);
+        }
+    }
+    */
+    
+    @Override
+    public void borrarNotificacion(Alerta alerta) {
+        List<Alerta> actuales = getNotificaciones();
+        
+        boolean borrado = actuales.removeIf(a -> a.equals(alerta));
+        
+        if (borrado) {
+            this.notifs = actuales;
+            guardarLista(FICHERO_NOTIFICACIONES, actuales);
         }
     }
     

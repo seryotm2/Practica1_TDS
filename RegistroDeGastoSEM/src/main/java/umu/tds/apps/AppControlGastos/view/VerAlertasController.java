@@ -12,12 +12,17 @@ import umu.tds.modeloNegocio.Alerta;
 public class VerAlertasController {
 
     @FXML private ListView<Alerta> listaNotificaciones;
+    @FXML private ListView<Alerta> listaAlertasActivas;
 
     @FXML
     public void initialize() {
-        cargarNotificaciones();
-        
-        listaNotificaciones.setCellFactory(param -> new ListCell<Alerta>() {
+        configurarRenderizado(listaNotificaciones, true);
+        configurarRenderizado(listaAlertasActivas, false);
+        cargarListas();
+    }
+    
+    private void configurarRenderizado(ListView<Alerta> lista, boolean esAlertaDisparada) {
+        lista.setCellFactory(param -> new ListCell<Alerta>() {
             @Override
             protected void updateItem(Alerta item, boolean empty) {
                 super.updateItem(item, empty);
@@ -26,17 +31,23 @@ public class VerAlertasController {
                     setStyle("");
                 } else {
                     setText(item.getDescripcion());
-                    
-                    // Opcional: ponerlo en rojo negrita
-                    setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+                    if (esAlertaDisparada) {
+                        setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+                    } else {
+                        setStyle("-fx-text-fill: black;");
+                    }
                 }
             }
         });
     }
 
-    private void cargarNotificaciones() {
+    private void cargarListas() {
         listaNotificaciones.getItems().setAll(
             AppControlGastos.getInstancia().obtenerNotificaciones()
+        );
+        
+        listaAlertasActivas.getItems().setAll(
+            AppControlGastos.getInstancia().obtenerAlertas()
         );
     }
 
@@ -45,13 +56,25 @@ public class VerAlertasController {
         Alerta seleccionada = listaNotificaciones.getSelectionModel().getSelectedItem();
         
         if (seleccionada == null) {
-            mostrarAlerta("Aviso", "Selecciona una notificación para borrarla.");
+            mostrarAlerta("Aviso", "Selecciona un aviso de la lista superior para borrarlo.");
             return;
         }
 
         AppControlGastos.getInstancia().borrarNotificacion(seleccionada);
+        cargarListas();
+    }
+    
+    @FXML
+    public void borrarAlertaConfigurada(ActionEvent event) {
+        Alerta seleccionada = listaAlertasActivas.getSelectionModel().getSelectedItem();
         
-        cargarNotificaciones();
+        if (seleccionada == null) {
+            mostrarAlerta("Aviso", "Selecciona una regla de la lista inferior para eliminarla.");
+            return;
+        }
+
+        AppControlGastos.getInstancia().borrarAlertaConfigurada(seleccionada);
+        cargarListas();
     }
     
     @FXML

@@ -145,12 +145,22 @@ public class MenuPrincipalController {
     
     @FXML
     public void abrirAlertas(ActionEvent event) {
-        abrirVentanaModal("/umu/tds/view/ver_alertas.fxml", "Mis Notificaciones", event, false);
+        abrirVentanaModal("/umu/tds/view/ver_alertas.fxml", "Alertas/Notificaciones", event, false);
     }
     
     @FXML
     public void abrirCrearAlerta(ActionEvent event) {
         abrirVentanaModal("/umu/tds/view/crear_alerta.fxml", "Crear Nueva Alerta", event, false);
+    }
+    
+    @FXML
+    public void abrirEstadisticas(ActionEvent event) {
+        abrirVentanaModal("/umu/tds/view/estadisticas.fxml", "Estadísticas y Gráficos", event, false);
+    }
+    
+    @FXML
+    public void abrirEstadoCuentas(ActionEvent event) {
+        abrirVentanaModal("/umu/tds/view/estado_cuentas.fxml", "Estado de Cuentas y Deudas", event, false);
     }
     
 

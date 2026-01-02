@@ -4,16 +4,17 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="400.0" prefWidth="500.0" style="-fx-background-color: #F0FFFF; -fx-border-color: black;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="umu.tds.apps.AppControlGastos.view.VerAlertasController">
+<BorderPane prefHeight="500.0" prefWidth="500.0" style="-fx-background-color: #F0FFFF; -fx-border-color: black;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="umu.tds.apps.AppControlGastos.view.VerAlertasController">
    <top>
       <VBox alignment="CENTER" prefHeight="60.0" style="-fx-background-color: #FF4500; -fx-border-color: black;" BorderPane.alignment="CENTER">
          <children>
-            <Label text="Notificaciones Activas" textFill="WHITE">
+            <Label text="Centro de Alertas" textFill="WHITE">
                <font>
                   <Font name="DejaVu Serif Bold" size="22.0" />
                </font>
@@ -25,21 +26,40 @@
    <center>
       <VBox spacing="10.0" BorderPane.alignment="CENTER">
          <padding>
-            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            <Insets bottom="10.0" left="20.0" right="20.0" top="15.0" />
          </padding>
          <children>
-            <Label text="Has superado el límite en:">
+            <Label text="Notificaciones: " textFill="RED">
                <font>
-                  <Font size="14.0" />
+                  <Font name="System Bold" size="14.0" />
                </font>
             </Label>
             
-            <ListView fx:id="listaNotificaciones" style="-fx-border-color: #FF4500;" VBox.vgrow="ALWAYS" />
+            <ListView fx:id="listaNotificaciones" prefHeight="150.0" style="-fx-border-color: #FF4500;" />
+            <Button mnemonicParsing="false" onAction="#borrarNotificacion" style="-fx-background-color: #FF0000;" text="Eliminar Notificación Seleccionada" textFill="WHITE">
+                <font><Font size="11.0" /></font>
+            </Button>
+
+            <Separator prefWidth="200.0" />
+
+            <Label text="Alertas: " textFill="#000000">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
             
-            <Label text="* Selecciona una notificación para borrarla." textFill="#666666">
+            <ListView fx:id="listaAlertasActivas" prefHeight="150.0" style="-fx-border-color: #4682B4;" />
+             <Button mnemonicParsing="false" onAction="#borrarAlertaConfigurada" style="-fx-background-color: #4682B4;" text="Eliminar Alerta Seleccionada" textFill="WHITE">
+                <font><Font size="11.0" /></font>
+            </Button>
+            
+            <Label text="* Las alertas se eliminarán automáticamente al cumplirse." textFill="#666666" wrapText="true">
                <font>
                   <Font name="System Italic" size="11.0" />
                </font>
+               <VBox.margin>
+                  <Insets top="5.0" />
+               </VBox.margin>
             </Label>
          </children>
       </VBox>
@@ -51,12 +71,7 @@
             <Insets bottom="15.0" top="15.0" />
          </padding>
          <children>
-            <Button mnemonicParsing="false" onAction="#borrarNotificacion" style="-fx-background-color: #FF0000; -fx-border-color: black;" text="Borrar Notificación" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="13.0" />
-               </font>
-            </Button>
-            <Button mnemonicParsing="false" onAction="#cerrar" style="-fx-background-color: #696969; -fx-border-color: black;" text="Cerrar" textFill="WHITE" />
+            <Button mnemonicParsing="false" onAction="#cerrar" prefWidth="100.0" style="-fx-background-color: #696969; -fx-border-color: black;" text="Cerrar" textFill="WHITE" />
          </children>
       </HBox>
    </bottom>
