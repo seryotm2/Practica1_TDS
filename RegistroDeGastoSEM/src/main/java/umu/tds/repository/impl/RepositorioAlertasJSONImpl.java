@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import umu.tds.modeloNegocio.Alerta;
+import umu.tds.modeloNegocio.Gasto;
 import umu.tds.repository.RepositorioAlertas;
 
 
@@ -155,7 +157,7 @@ public class RepositorioAlertasJSONImpl implements RepositorioAlertas{
     
     private void guardarLista(String path, List<Alerta> lista) {
         try {
-            mapper.writeValue(new java.io.File(path), lista);
+            mapper.writerFor(new TypeReference<List<Alerta>>() {}).writeValue(new java.io.File(path), lista);
         } catch (IOException e) { 
             e.printStackTrace(); 
         }

@@ -17,7 +17,7 @@ public class CrearAlertaController {
         comboTipo.getSelectionModel().selectFirst();
         
         comboCategoria.getItems().add("Todas");
-        comboCategoria.getItems().addAll(AppControlGastos.getInstancia().obtenerNombresCategorias());
+        comboCategoria.getItems().addAll(AppControlGastos.getInstancia().getNombresCategorias());
         comboCategoria.getSelectionModel().selectFirst();
     }
 

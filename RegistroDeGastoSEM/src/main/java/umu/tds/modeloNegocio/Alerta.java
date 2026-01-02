@@ -66,6 +66,7 @@ public abstract class Alerta{
 		return disparada;
 	}
 	
+	@JsonIgnore
 	public abstract String getDescripcion();
 	
 	public void setLimiteGasto(double l) {

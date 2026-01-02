@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @JsonIdentityInfo(
@@ -19,46 +17,63 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 public class CuentaCompartida {
     
     private String nombre;
-    //@JsonIdentityReference(alwaysAsId = true)
-    private List<Usuario> participantes;
-    private List<Gasto> gastos;
+    
+
+	private List<Usuario> participantes;
+   // private List<Gasto> gastos;
     
     private static int contador = 1;
     private int id;
     
     // Si el mapa está vacío, se asume reparto equitativo.
     
-    private Map<String, Double> porcentajes;
+    private Map<String, Double> balance;
 
     public CuentaCompartida(String nombre, List<Usuario> participantes) {
         this.nombre = nombre;
         this.participantes = new ArrayList<>(participantes); 
-        this.gastos = new ArrayList<>();
-        this.porcentajes = new HashMap<>();
+      //  this.gastos = new ArrayList<>();
+        this.balance = new HashMap<>();
         this.id = CuentaCompartida.contador;
         CuentaCompartida.contador++;
+        participantes.forEach(u-> balance.put(u.getNombre(), 0.0));
     }
     
     public CuentaCompartida() {
         this.participantes = new ArrayList<>(); 
-        this.gastos = new ArrayList<>();
-        this.porcentajes = new HashMap<>();
+     //   this.gastos = new ArrayList<>();
+        this.balance = new HashMap<>();
     }
     
-    public int getId() {
+    public Map<String, Double> getBalance() {
+		return balance;
+	}
+
+	public void setBalance(Map<String, Double> balance) {
+		this.balance = balance;
+	}
+
+	public int getId() {
     	return this.id;
     }
     
     public void setId(int id) {
     	this.id = id;
     }
-    
+           
     public void setPorcentajes(Map<String, Double> porcentajes) {
-        this.porcentajes = new HashMap<>(porcentajes);
+        this.balance = new HashMap<>(porcentajes);
     }
 
-    public boolean addGasto(Gasto g) {
-        return gastos.add(g);
+    public void addGasto(GastoCompartido g) {
+    	double gCantidad = g.getCantidad();
+    	for(String nomUs: balance.keySet()) {
+    		Usuario usAct = Directorio.getInstancia().buscarUsuario(nomUs).get();
+    		if(nomUs.equals(g.getUsuarioId()))
+    			balance.put(nomUs, balance.get(nomUs) + gCantidad * (100 - g.getPorcentajeDe(usAct))/100); // Saldo del pagador
+    		else
+    			balance.put(nomUs, balance.get(nomUs) - gCantidad * g.getPorcentajeDe(usAct)/100);	// Saldo de los deudores
+    	}
     }
     
     public static void setContador(int ultimoId) {
@@ -70,7 +85,7 @@ public class CuentaCompartida {
      * Saldo = Lo que ha pagado - Lo que debería haber pagado.
      * Positivo: Le deben dinero. Negativo: Debe dinero.
      */
-    public double getSaldo(Usuario u) {
+   /* public double getSaldo(Usuario u) {
         double totalGastado = gastos.stream().mapToDouble(Gasto::getCantidad).sum();
         double pagadoPorUsuario = gastos.stream()
                 .filter(g -> g.getUsuario().equals(u))
@@ -90,6 +105,12 @@ public class CuentaCompartida {
         }
 
         return pagadoPorUsuario - cuotaUsuario;
+    }*/
+    
+    public double getSaldo(Usuario u) {
+    	if(!balance.containsKey(u.getNombre()))
+    		return 0;
+    	return balance.get(u.getNombre());
     }
 
     public String getNombre() {
@@ -100,9 +121,9 @@ public class CuentaCompartida {
         return Collections.unmodifiableList(participantes);
     }
 
-    public List<Gasto> getGastos() {
+   /* public List<Gasto> getGastos() {
         return Collections.unmodifiableList(gastos);
-    }
+    }*/
     
     @Override
     public int hashCode() {

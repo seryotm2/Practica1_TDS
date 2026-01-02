@@ -127,7 +127,7 @@ public class AppControlGastos {
         CuentaCompartida nuevaCuenta = new CuentaCompartida(nombre, listaCompleta);
         
         libroDeCuenta.addCuentaCompartida(nuevaCuenta);
-        repoGastos.updateCuentas(libroDeCuenta.getCuentasCompartidas());
+       // repoGastos.updateCuentas(libroDeCuenta.getCuentasCompartidas());
         return true;
     }
     
@@ -238,9 +238,7 @@ public class AppControlGastos {
     */
     
     public boolean eliminarGasto(Gasto g) {
-    	repoGastos.eliminarGasto(g);
-    	return true;
-        
+    	return libroDeCuenta.eliminarGasto(g);        
     }
 
     public boolean eliminarCuentaCompartida(CuentaCompartida c) {
@@ -275,21 +273,15 @@ public class AppControlGastos {
     
 
     public double obtenerGastoTotal() {
-        return repoGastos.getHistorico().stream().mapToDouble(this::calcularMiParte).sum();
+    	return libroDeCuenta.getGastoGlobal();
     }
 
     public double obtenerGastoMensual() {
-        return repoGastos.getHistorico().stream()
-        		.filter(Gasto::realizadoEnEsteMes)
-            	.mapToDouble(this::calcularMiParte)
-            	.sum();
+        return libroDeCuenta.getGastoMensual();
     }
 
     public double obtenerGastoSemanal() {
-        return repoGastos.getHistorico().stream()
-                .filter(Gasto::realizadoEnEstaSemana)
-                .mapToDouble(this::calcularMiParte)
-                .sum();
+        return libroDeCuenta.getGastoSemanal();
     }
     
     
@@ -427,38 +419,21 @@ public class AppControlGastos {
     
 
     
-    public List<String> obtenerNombresCategorias() {
-        return new ArrayList<>(libroDeCuenta.getNombresCategorias());
-    }
-    
-
-    public boolean modificarGasto(Gasto gasto, String nuevoConcepto, double nuevaCantidad, 
+   public boolean modificarGasto(Gasto gasto, String nuevoConcepto, double nuevaCantidad, 
                                   LocalDate nuevaFecha, String nombreNuevaCategoria) {
         if (gasto == null || nuevaCantidad <= 0 || nuevaFecha == null || nombreNuevaCategoria == null) return false;
-
-        try {
-            Categoria catAntigua = gasto.getCategoria();
-            Categoria catNueva = libroDeCuenta.getCategoria(nombreNuevaCategoria);
-            
-            if (catNueva == null) return false; 
-
-            repoGastos.eliminarGasto(gasto);
-            if (catAntigua != null) {
-                catAntigua.eliminarGasto(gasto);
-            }
-
+        	String oldConcepto = gasto.getConcepto();
+        	double oldCatidad = gasto.getCantidad();
+        
             gasto.setConcepto(nuevoConcepto);
             gasto.setCantidad(nuevaCantidad);
-            gasto.setFecha(nuevaFecha);
-            gasto.setCategoria(catNueva);
-            catNueva.addGasto(gasto);
-            repoGastos.addGasto(gasto);
-            
+            if(!libroDeCuenta.cambiarGastoDeCategoria(gasto, nombreNuevaCategoria)
+            	|| !libroDeCuenta.cambiarFechaDeGasto(gasto, nuevaFecha)) {
+            	gasto.setCantidad(oldCatidad);
+            	gasto.setConcepto(oldConcepto);
+            	return false;
+            }            
             return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
     }
     
     

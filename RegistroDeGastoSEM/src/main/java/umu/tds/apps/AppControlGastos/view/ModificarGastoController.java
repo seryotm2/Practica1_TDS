@@ -21,7 +21,7 @@ public class ModificarGastoController {
 
     @FXML
     public void initialize() {
-        comboCategoria.getItems().setAll(AppControlGastos.getInstancia().obtenerNombresCategorias());
+        comboCategoria.getItems().setAll(AppControlGastos.getInstancia().getNombresCategorias());
     }
 
     public void initData(Gasto gasto) {

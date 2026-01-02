@@ -153,15 +153,16 @@ public class LibroDeCuenta implements SujetoGasto{
     public Optional<Gasto> crearGastoCompartido(CuentaCompartida cuenta, double cantidad, LocalDate fecha, Usuario usuario,
     		String concepto, String categoria, Map<String, Double> porcentajes) {
     	
-    	if(!existeCategoria(categoria))
+    	if(!existeCategoria(categoria) || !existeCuenta(cuenta.getId()))
             return Optional.empty();
     	
     	// Creamos el gasto y lo añadimos a la categoría
         Optional<Gasto> newGastoOpt = categorias.get(categoria)
         		.addNewGastoCompartido(cuenta, cantidad, fecha, usuario, concepto, porcentajes);
         if(newGastoOpt.isPresent()) {
+        	CuentaCompartida cp = buscarCuentaCompartidaPorId(cuenta.getId()).get();
             Gasto newGasto = newGastoOpt.get();
-            
+            cp.addGasto((GastoCompartido)newGasto);            
             boolean esGastoPropio = usuario.equals(AppControlGastos.getInstancia().getUsuarioActual());
 
             if (esGastoPropio) {
@@ -174,6 +175,7 @@ public class LibroDeCuenta implements SujetoGasto{
                     addIntoGastosDeLaSemana(newGasto);
             }
             AppControlGastos.getRepoGastos().updateHistorico(newGasto);
+            AppControlGastos.getRepoGastos().updateCuentas(cuentasCompartidas);
             notificarObservadores();
         }
        return newGastoOpt;
@@ -195,13 +197,15 @@ public class LibroDeCuenta implements SujetoGasto{
 	public double getGastoSemanal() {
 		updateGastosDeLaSemana();
 		return gastosDeLaSemana.stream()
-			.collect(Collectors.summingDouble(g-> g.getCantidad()));
+				.filter(g-> g.getUsuario().equals(Directorio.getUsuarioPropietario()))
+				.collect(Collectors.summingDouble(g-> g.getCantidad()));
 	}
 	
 	public double getGastoMensual() {
 		updateGastosDelMes();
 		return gastosDelMes.stream()
-			.collect(Collectors.summingDouble(g-> g.getCantidad()));
+				.filter(g-> g.getUsuario().equals(Directorio.getUsuarioPropietario()))
+				.collect(Collectors.summingDouble(g-> g.getCantidad()));
 	}
 
 	public Set<String> getNombresCategorias() {
@@ -236,6 +240,10 @@ public class LibroDeCuenta implements SujetoGasto{
 	
 	public boolean existeCategoria(Categoria c) {
 		return categorias.containsValue(c);
+	}
+	
+	public boolean existeCuenta(int cuentaId) {
+		return buscarCuentaCompartidaPorId(cuentaId).isPresent();
 	}
 	
 	/**
@@ -315,8 +323,8 @@ public class LibroDeCuenta implements SujetoGasto{
 	}
 	
 	public boolean eliminarGasto(Gasto e) {
-		var catGasto = e.getCategoria();
-		if(!existeCategoria(catGasto))
+		var catGasto = getCategoria(e.getCategoria().getNombreCategoria());
+		if(catGasto == null)
 			return false;
 		
 		boolean resultado = catGasto.eliminarGasto(e);
@@ -351,7 +359,7 @@ public class LibroDeCuenta implements SujetoGasto{
 			return false;
 		if(g.getCategoria().equals(c))
 			return true;
-		Categoria antigua = g.getCategoria();
+		Categoria antigua = this.categorias.get(g.getCategoria().getNombreCategoria());
 		Categoria nueva = this.categorias.get(c.getNombreCategoria());
 		g.setCategoria(nueva);
 	    if (!nueva.addGasto(g)) {
@@ -376,21 +384,35 @@ public class LibroDeCuenta implements SujetoGasto{
 		return cambiarGastoDeCategoria(g, new Categoria(c));
 	}
 	
-	public void cambiarFechaDeGasto(Gasto g, LocalDate newFecha) {
-		Categoria gCat = g.getCategoria();
-		gCat.eliminarGasto(g);
-		gastosDeLaSemana.remove(g);
-		gastosDelMes.remove(g);
-		AppControlGastos.getRepoGastos().eliminarGasto(g);
-		Optional<Gasto> nuevo = gCat.addNewGasto(g.getCantidad(), newFecha, g.getUsuario(), g.getConcepto());
+	public boolean cambiarFechaDeGasto(Gasto g, LocalDate newFecha) {
+		Categoria gCat = this.categorias.get(g.getCategoria().getNombreCategoria());
+		if(!gCat.eliminarGasto(g))
+			return false;
+		
+		Optional<Gasto> nuevo = Optional.empty();
+		if(g instanceof GastoCompartido) {
+			GastoCompartido chged = (GastoCompartido)g;
+			if(!existeCuenta(chged.getCuenta())) 
+				return false;
+			CuentaCompartida cc = buscarCuentaCompartidaPorId(chged.getCuenta()).get();
+			nuevo = gCat.addNewGastoCompartido(cc, chged.getCantidad(), newFecha, chged.getUsuario(),
+					chged.getConcepto(), chged.getPorcentajes());
+		} 
+		else
+			nuevo = gCat.addNewGasto(g.getCantidad(), newFecha, g.getUsuario(), g.getConcepto());
 		if(nuevo.isPresent()) {
+			gastosDeLaSemana.remove(g);
+			gastosDelMes.remove(g);
+			AppControlGastos.getRepoGastos().eliminarGasto(g);
 			g = nuevo.get();
 			AppControlGastos.getRepoGastos().updateHistorico(g);
 			if(g.realizadoEnEsteMes())
 				addIntoGastosDelMes(g);
 			if(g.realizadoEnEstaSemana())
 				addIntoGastosDeLaSemana(g);
+			return true;
 		}
+		return false;
 	}
 	
 	public Optional<CuentaCompartida> buscarCuentaCompartidaPorId(int id) {

@@ -12,17 +12,10 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import umu.tds.controlador.AppControlGastos;
 
-/*@JsonIdentityInfo(
-	    generator = ObjectIdGenerators.PropertyGenerator.class,
-	    property = "nombreCategoria"
-	)*/
-
 
 public class Categoria {
-	//@JsonProperty("Nombre")
+
 	private String nombreCategoria;
-	
-	//@JsonProperty("ListadoDeGastos")
 	private TreeSet<Gasto> gastos;
 	private double gastoTotal;
 	private boolean cargado = false;	// atributo para saber si la categoría ha recuperado datos de disco.
