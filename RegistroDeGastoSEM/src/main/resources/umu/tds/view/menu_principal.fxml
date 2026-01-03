@@ -135,6 +135,11 @@
                   <Font name="System Bold" size="16.0" />
                </font>
             </Button>
+            <Button mnemonicParsing="false" onAction="#abrirTerminal" prefHeight="40.0" prefWidth="250.0" style="-fx-background-color: #000000; -fx-border-color: black;" text="Línea de Comandos" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+            </Button>
          </children>
       </VBox>
       

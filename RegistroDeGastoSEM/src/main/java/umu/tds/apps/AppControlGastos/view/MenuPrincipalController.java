@@ -162,6 +162,10 @@ public class MenuPrincipalController {
     public void abrirEstadoCuentas(ActionEvent event) {
         abrirVentanaModal("/umu/tds/view/estado_cuentas.fxml", "Estado de Cuentas y Deudas", event, false);
     }
+    @FXML
+    public void abrirTerminal(ActionEvent event) {
+        abrirVentanaModal("/umu/tds/view/terminal.fxml", "Terminal de Comandos", event, true);
+    }
     
 
     private void abrirVentanaModal(String fxml, String titulo, ActionEvent event, boolean actualizarAlVolver) {

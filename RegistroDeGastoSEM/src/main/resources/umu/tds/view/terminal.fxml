@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="umu.tds.apps.AppControlGastos.view.TerminalController">
+   <center>
+      <TextArea fx:id="txtSalida" editable="false" style="-fx-control-inner-background: black; -fx-text-fill: #00FF00;" wrapText="true">
+         <font>
+            <Font name="Monospaced Regular" size="14.0" /> 
+         </font>
+      </TextArea>
+   </center>
+   <bottom>
+      <TextField fx:id="txtEntrada" onAction="#procesarEntrada" promptText="Escribe aquí..." style="-fx-background-color: #333333; -fx-text-fill: white;">
+         <font>
+            <Font name="Monospaced Regular" size="14.0" />
+         </font>
+      </TextField>
+   </bottom>
+</BorderPane>

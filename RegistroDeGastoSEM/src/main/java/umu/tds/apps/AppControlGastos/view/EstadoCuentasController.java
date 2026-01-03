@@ -11,11 +11,7 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import umu.tds.controlador.AppControlGastos;
 import umu.tds.modeloNegocio.CuentaCompartida;
-import umu.tds.modeloNegocio.Gasto;
-import umu.tds.modeloNegocio.GastoCompartido;
-import umu.tds.modeloNegocio.Usuario;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
