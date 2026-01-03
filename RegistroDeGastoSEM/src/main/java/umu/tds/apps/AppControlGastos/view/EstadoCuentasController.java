@@ -49,51 +49,14 @@ public class EstadoCuentasController {
         if (grupo == null) return;
 
         listaBalances.getItems().clear();
-        Map<Usuario, Double> balances = new HashMap<>();
-        double totalGastadoGrupo = 0;
-
-        for (Usuario u : grupo.getParticipantes()) {
-            balances.put(u, 0.0);
-        }
-
-        List<Gasto> todosLosGastos = AppControlGastos.getInstancia().obtenerTodosLosGastos();
-        
-        for (Gasto g : todosLosGastos) {
-            if (g instanceof GastoCompartido) {
-                GastoCompartido gc = (GastoCompartido) g;
-                
-                if (gc.getCuenta() == grupo.getId()) { 
-                    
-                    double monto = gc.getCantidad();
-                    totalGastadoGrupo += monto;
-                    Usuario pagador = gc.getUsuario();
-
-                    balances.put(pagador, balances.getOrDefault(pagador, 0.0) + monto);
-
-                    Map<String, Double> porcentajes = gc.getPorcentajes(); 
-                    
-                    if (porcentajes != null && !porcentajes.isEmpty()) {
-                        for (Usuario u : grupo.getParticipantes()) {
-                             Double porcentaje = porcentajes.getOrDefault(u.getNombre(), 0.0); 
-                             
-                             double cuota = monto * (porcentaje / 100.0);
-                             balances.put(u, balances.get(u) - cuota);
-                        }
-                    } else {
-                        double cuota = monto / grupo.getParticipantes().size();
-                        for (Usuario u : grupo.getParticipantes()) {
-                            balances.put(u, balances.get(u) - cuota);
-                        }
-                    }
-                }
-            }
-        }
+        Map<String, Double> balances = grupo.getBalance();
+        double totalGastadoGrupo = grupo.getDineroMovido();
 
         lblTotalGrupo.setText(String.format("Total Movido: %.2f €", totalGastadoGrupo));
 
-        for (Map.Entry<Usuario, Double> entry : balances.entrySet()) {
+        for (Map.Entry<String, Double> entry : balances.entrySet()) {
             double saldo = entry.getValue();
-            String nombre = entry.getKey().getNombre();
+            String nombre = entry.getKey();
             String texto;
             
             if (saldo > 0.01) {

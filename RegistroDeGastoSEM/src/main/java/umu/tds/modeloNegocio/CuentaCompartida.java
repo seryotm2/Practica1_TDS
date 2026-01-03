@@ -16,18 +16,15 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 	)
 public class CuentaCompartida {
     
-    private String nombre;
+	private static int contador = 1;
     
-
+    private String nombre;
 	private List<Usuario> participantes;
    // private List<Gasto> gastos;
-    
-    private static int contador = 1;
-    private int id;
-    
-    // Si el mapa está vacío, se asume reparto equitativo.
-    
+    private int id;    
+    // Si el mapa está vacío, se asume reparto equitativo.    
     private Map<String, Double> balance;
+    private double dineroMovido; 
 
     public CuentaCompartida(String nombre, List<Usuario> participantes) {
         this.nombre = nombre;
@@ -36,6 +33,7 @@ public class CuentaCompartida {
         this.balance = new HashMap<>();
         this.id = CuentaCompartida.contador;
         CuentaCompartida.contador++;
+        dineroMovido = 0;
         participantes.forEach(u-> balance.put(u.getNombre(), 0.0));
     }
     
@@ -74,9 +72,18 @@ public class CuentaCompartida {
     		else
     			balance.put(nomUs, balance.get(nomUs) - gCantidad * g.getPorcentajeDe(usAct)/100);	// Saldo de los deudores
     	}
+    	dineroMovido += g.getCantidad();
     }
     
-    public static void setContador(int ultimoId) {
+    public double getDineroMovido() {
+		return dineroMovido;
+	}
+
+	void setDineroMovido(double dineroMovido) {
+		this.dineroMovido = dineroMovido;
+	}
+
+	public static void setContador(int ultimoId) {
     	contador = ultimoId + 1;
     }
 
@@ -85,28 +92,6 @@ public class CuentaCompartida {
      * Saldo = Lo que ha pagado - Lo que debería haber pagado.
      * Positivo: Le deben dinero. Negativo: Debe dinero.
      */
-   /* public double getSaldo(Usuario u) {
-        double totalGastado = gastos.stream().mapToDouble(Gasto::getCantidad).sum();
-        double pagadoPorUsuario = gastos.stream()
-                .filter(g -> g.getUsuario().equals(u))
-                .mapToDouble(Gasto::getCantidad).sum();
-
-        double cuotaUsuario = 0.0;
-
-        if (porcentajes.isEmpty()) {
-            // Reparto equitativo
-            if (!participantes.isEmpty()) {
-                cuotaUsuario = totalGastado / participantes.size();
-            }
-        } else {
-            // Reparto por porcentaje
-        	double porcentaje = porcentajes.getOrDefault(u.getNombre(), 0.0);
-            cuotaUsuario = totalGastado * (porcentaje / 100.0);
-        }
-
-        return pagadoPorUsuario - cuotaUsuario;
-    }*/
-    
     public double getSaldo(Usuario u) {
     	if(!balance.containsKey(u.getNombre()))
     		return 0;
