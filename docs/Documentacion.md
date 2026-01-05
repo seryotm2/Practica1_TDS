@@ -14,4 +14,3 @@ La aplicación permite registrar personas por nombre y correo (opcional) y añad
 
 5. Breve explicación de la arquitectura de la aplicación y decisiones de diseño que se consideren de interés para la comprensión del trabajo.
 6. Explicación de los patrones de diseño usados.
-7. Breve manual de usuario (debe incluir capturas de las ventanas para apoyar las explicaciones)
