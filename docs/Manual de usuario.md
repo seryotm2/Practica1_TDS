@@ -17,22 +17,22 @@ Una vez guardado, aparecerá en el historial de movimientos y el gasto se verá 
 
 Ahora podemos modificarlo o eliminarlo mediante el botón Gestion/Eliminar. Debemos seleccionar el gasto que nos interesa. Si lo modificamos, aparecerá una ventana similar a la de añadir gasto, y si lo eliminamos se borrará del historial y de la suma total de gastos.
 
-![ModGasto](https://github.com/seryotm2/Practica1_TDS/blob/main/docs/imagenes/AñadirGasto.png)
+![ModGasto](https://github.com/seryotm2/Practica1_TDS/blob/main/docs/imagenes/ModElimGasto.png)
 
 ### 2. Categorias
 Para crear una categoria existe el botón **Crear Categoría**, que solo pide el nombre de la categoría. Ahora la categoría creada es seleccionable al crear un gasto.
 
-![CrearCategoria](https://github.com/seryotm2/Practica1_TDS/blob/main/docs/imagenes/AñadirGasto.png)
+![CrearCategoria](https://github.com/seryotm2/Practica1_TDS/blob/main/docs/imagenes/CrearCategoria.png)
 
 ### 3. Usuarios
 Para crear usuarios debemos hacerlo con el botón **Añadir Usuario** y especificar un nombre y un email.
 
-![CrearUsuario](https://github.com/seryotm2/Practica1_TDS/blob/main/docs/imagenes/AñadirGasto.png)
+![CrearUsuario](https://github.com/seryotm2/Practica1_TDS/blob/main/docs/imagenes/CrearUsuario.png)
 
 ### 4. Grupos
 Para crear un grupo o cuenta compartida indicaremos un nombre de grupo y añadiremos usuarios creados previamente seleccionándolos en el desplegable y confirmándolos con **Añadir a la lista**.
 
-![CrearGrupo](https://github.com/seryotm2/Practica1_TDS/blob/main/docs/imagenes/AñadirGasto.png)
+![CrearGrupo](https://github.com/seryotm2/Practica1_TDS/blob/main/docs/imagenes/CrearGrupo.png)
 
 ### 5. Gastos grupales
 
