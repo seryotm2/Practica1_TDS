@@ -1,3 +1,5 @@
+# Manual de usuario
+
 ## 1. Introducción
 Esta aplicación permite seguir los gastos realizados en ciertos periodos de tiempo, repartirlos entre grupos de usuarios, y alertar al usuario si ha gastado más de lo establecido. Permite crear gastos, clasificarlos en categorias, crear grupos de usuarios, alertas, importar ficheros de gastos y ver el registro de todos estos datos en gráficos.
 
