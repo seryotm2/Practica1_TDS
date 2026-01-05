@@ -22,7 +22,7 @@ public class TerminalController {
     @FXML
     public void initialize() {
         imprimir(">> RG:SEM");
-        imprimir(">> Comandos: listar, crear, borrar, modificar, salir");
+        imprimir(">> Comandos: comandos, listar, crear, borrar, modificar, salir");
         imprimir("--------------------------------------------------");
     }
 
