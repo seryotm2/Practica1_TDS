@@ -26,7 +26,6 @@ public class LibroDeCuenta implements SujetoGasto{
 	// Objeto singleton
 	static private LibroDeCuenta instancia = null;
 	
-	double gastoGlobal;
 	HashMap<String,Categoria> categorias;
 	Set<Gasto> gastosDeLaSemana, gastosDelMes;	
 	List<CuentaCompartida> cuentasCompartidas;	//por Sergio
@@ -34,7 +33,6 @@ public class LibroDeCuenta implements SujetoGasto{
 	
 	
 	private LibroDeCuenta() {
-		gastoGlobal = 0;
 		categorias = new HashMap<>();
 		gastosDeLaSemana = new TreeSet<>();
 		gastosDelMes = new TreeSet<>();
@@ -51,7 +49,6 @@ public class LibroDeCuenta implements SujetoGasto{
 		if(instancia == null) {
 			instancia = new LibroDeCuenta();
 			LibroDeCuenta.cargarCategorias();
-			LibroDeCuenta.recuperarGastoGlobal();
 			LibroDeCuenta.cargarGastosDelMes();
 			LibroDeCuenta.cargarGastosDeLaSemana();
 			LibroDeCuenta.cargarCuentas();
@@ -68,9 +65,9 @@ public class LibroDeCuenta implements SujetoGasto{
 		catnombres.forEach(cn-> instancia.categorias.put(cn, new Categoria(cn)));
 	}
 	
-	static private void recuperarGastoGlobal() {
+	static private double recuperarGastoGlobal() {
 		Set<Gasto> historico = AppControlGastos.getRepoGastos().getHistorico();
-		instancia.gastoGlobal = historico.stream()
+		return historico.stream()
 			.filter(g -> g.getUsuario() != null && g.getUsuario().equals(Directorio.getUsuarioPropietario()))
 			.collect(Collectors.summingDouble(Gasto::getCantidad));
 	}
@@ -135,7 +132,6 @@ public class LibroDeCuenta implements SujetoGasto{
              boolean esGastoPropio = usuario.equals(AppControlGastos.getInstancia().getUsuarioActual());
 
              if (esGastoPropio) {
-                 gastoGlobal += newGasto.getCantidad();
                  
                  if(newGasto.realizadoEnEsteMes())
                      addIntoGastosDelMes(newGasto);
@@ -166,7 +162,6 @@ public class LibroDeCuenta implements SujetoGasto{
             boolean esGastoPropio = usuario.equals(AppControlGastos.getInstancia().getUsuarioActual());
 
             if (esGastoPropio) {
-                gastoGlobal += newGasto.getCantidad();
                 
                 if(newGasto.realizadoEnEsteMes())
                     addIntoGastosDelMes(newGasto);
@@ -191,7 +186,7 @@ public class LibroDeCuenta implements SujetoGasto{
 	
 	
 	public double getGastoGlobal() {
-		return gastoGlobal;
+		return LibroDeCuenta.recuperarGastoGlobal();
 	}
 	
 	public double getGastoSemanal() {
@@ -335,7 +330,6 @@ public class LibroDeCuenta implements SujetoGasto{
 					gastosDeLaSemana.remove(e);
 				if(gastosDelMes.contains(e))
 					gastosDelMes.remove(e);
-				gastoGlobal -= e.getCantidad();
 			}
 			AppControlGastos.getRepoGastos().eliminarGasto(e);
 		}
