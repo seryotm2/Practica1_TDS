@@ -1,1 +1,0 @@
-Esto sirve para visualizar la carpeta imagenes, cuando exista una imagen se debe borrar
