@@ -28,7 +28,7 @@ public class LibroDeCuenta implements SujetoGasto{
 	
 	HashMap<String,Categoria> categorias;
 	Set<Gasto> gastosDeLaSemana, gastosDelMes;	
-	List<CuentaCompartida> cuentasCompartidas;	//por Sergio
+	List<CuentaCompartida> cuentasCompartidas;	
 	private List<ObservadorGasto> obs;
 	
 	
@@ -97,14 +97,7 @@ public class LibroDeCuenta implements SujetoGasto{
 	 * Si existe entonces regresa la cuenta.
 	 * @param nombreCuenta
 	 * @return Un objeto Obtional con la cuenta si la cuenta fue encontrada. Vacío en caso contrario.
-	 */
-	//TODO En caso de implementar otra forma de identificar las cuentas, por ejemplo, con un número
-	// de secuencia, haciendo que el nombre se pueda repetir en varias cuentas, hacer que este método
-	// devuelva una lista.
-	
-	
-	//Por Sergio
-    
+	 */	    
     public void addCuentaCompartida(CuentaCompartida cuenta) {
         cuentasCompartidas.add(cuenta);
         AppControlGastos.getRepoGastos().updateCuentas(cuentasCompartidas);
@@ -177,14 +170,7 @@ public class LibroDeCuenta implements SujetoGasto{
         
     }
 	
-	
-	
-	
-	
-	
-	
-	
-	
+		
 	public double getGastoGlobal() {
 		return LibroDeCuenta.recuperarGastoGlobal();
 	}
@@ -296,20 +282,6 @@ public class LibroDeCuenta implements SujetoGasto{
 	 * @param n Número de gastos solicitados.
 	 * */
 	public List<Gasto> getUltimosNGastos(int n){
-		
-	/*  LinkedList<Gasto> list = new LinkedList<>();
-		if(n<=0) return list;
-		
-		for(var cat: categorias.values()) {
-			if(cat.isEmpty())
-				continue;
-			list.addAll(cat.getUltimosNGastos(n)); 
-		}
-		if(!list.isEmpty()) {
-			return list.stream().sorted(Comparator.reverseOrder()).limit(n)
-					.collect(Collectors.toList());
-		}
-		return list; */
 		return AppControlGastos.getRepoGastos()
 				.getHistorico().stream()
 				.sorted(Comparator.reverseOrder())
@@ -415,11 +387,7 @@ public class LibroDeCuenta implements SujetoGasto{
                 .findFirst();
     }
 	
-	/**
-	 * TODO Falta la recuperación de datos desde el
-	 * repositorio.
-	 */
-	
+		
 	public void setCuentasCompartidas(List<CuentaCompartida> cuentas) {
         this.cuentasCompartidas = new ArrayList<>(cuentas);
         

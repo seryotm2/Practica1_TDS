@@ -48,11 +48,6 @@ public abstract class Gasto implements Comparable<Gasto>{
         return id;
     }
 	
-	/*
-	private void setId(UUID id) {
-        this.id = id;
-    }
-    */
 		
 	public String getConcepto() {
 		return concepto;

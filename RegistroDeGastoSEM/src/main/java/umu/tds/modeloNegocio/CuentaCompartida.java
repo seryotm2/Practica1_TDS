@@ -20,16 +20,13 @@ public class CuentaCompartida {
     
     private String nombre;
 	private List<Usuario> participantes;
-   // private List<Gasto> gastos;
     private int id;    
-    // Si el mapa está vacío, se asume reparto equitativo.    
     private Map<String, Double> balance;
     private double dineroMovido; 
 
     public CuentaCompartida(String nombre, List<Usuario> participantes) {
         this.nombre = nombre;
         this.participantes = new ArrayList<>(participantes); 
-      //  this.gastos = new ArrayList<>();
         this.balance = new HashMap<>();
         this.id = CuentaCompartida.contador;
         CuentaCompartida.contador++;
@@ -39,7 +36,6 @@ public class CuentaCompartida {
     
     public CuentaCompartida() {
         this.participantes = new ArrayList<>(); 
-     //   this.gastos = new ArrayList<>();
         this.balance = new HashMap<>();
     }
     
@@ -105,10 +101,6 @@ public class CuentaCompartida {
     public List<Usuario> getParticipantes() {
         return Collections.unmodifiableList(participantes);
     }
-
-   /* public List<Gasto> getGastos() {
-        return Collections.unmodifiableList(gastos);
-    }*/
     
     @Override
     public int hashCode() {

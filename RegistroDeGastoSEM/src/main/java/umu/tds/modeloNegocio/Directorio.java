@@ -8,21 +8,20 @@ import java.util.Optional;
 
 import umu.tds.controlador.AppControlGastos;
 import umu.tds.repository.RepositorioUsuarios;
-import umu.tds.repository.impl.RepositorioUsuariosJSON;
 
 public class Directorio {
 	
 	private static Directorio instancia = null;	//Singleton
     
-    public static final String NOMBRE_PROPIETARIO = "Yo";  //esto lo dejo de momento así, ya veremos la manera de cambiar el nombre
+    public static final String NOMBRE_PROPIETARIO = "Yo";
     
     private RepositorioUsuarios repositorio;
     private Map<String, Usuario> usuarios;
     private static Usuario usuarioPropietario = new Usuario(NOMBRE_PROPIETARIO, ""); ;
 
-    private Directorio() {	// Constructor privado. Antes público. Marco.
+    private Directorio() {
         this.usuarios = new HashMap<>();
-        this.repositorio = AppControlGastos.getRepoUsuarios(); /*new RepositorioUsuariosJSON();*/
+        this.repositorio = AppControlGastos.getRepoUsuarios();
         
         List<Usuario> listaCargada = repositorio.getUsuarios();
         for(Usuario u : listaCargada) {
@@ -34,7 +33,6 @@ public class Directorio {
         }
     }
     
-    //Marco: He puesto esta clase como un Singleton
     /**
      * Retorna una instancia de Directorio. Sucesivas llamadas a esté método
      * retornan el mismo objeto. Solo se crea en la primeta llamada.

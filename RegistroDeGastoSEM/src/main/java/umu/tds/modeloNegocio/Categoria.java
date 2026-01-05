@@ -17,7 +17,7 @@ public class Categoria {
 
 	private String nombreCategoria;
 	private TreeSet<Gasto> gastos;
-	private double gastoTotal;
+	//private double gastoTotal;
 	private boolean cargado = false;	// atributo para saber si la categoría ha recuperado datos de disco.
 	
 	public Categoria() {
@@ -27,7 +27,6 @@ public class Categoria {
 	public Categoria(String nombre) {
 		nombreCategoria = nombre;
 		gastos = new TreeSet<Gasto>();
-		gastoTotal = 0;
 	}
 
 	public String getNombreCategoria() {
@@ -37,7 +36,7 @@ public class Categoria {
 	@JsonIgnore
 	public Set<Gasto> getGastos() {
 		if(!this.cargado)
-			recuperarEstado();;
+			recuperarEstado();
 		return Collections.unmodifiableSet(gastos);
 	}
 
@@ -45,7 +44,9 @@ public class Categoria {
 	public double getGastoTotal() {
 		if(!this.cargado)
 			recuperarEstado();
-		return gastoTotal;
+		return this.gastos.stream()
+				.filter(g-> g.getUsuario().equals(Directorio.getUsuarioPropietario()))
+				.collect(Collectors.summingDouble(Gasto::getCantidad));
 	}
 	
 	/**
@@ -65,10 +66,7 @@ public class Categoria {
 		
 		if(!cargado) {recuperarEstado();}
 		
-		if(gastos.add(newGasto)) {
-			boolean esGastoPropio = usuario.equals(AppControlGastos.getInstancia().getUsuarioActual());
-			if(esGastoPropio) 
-				gastoTotal += newGasto.getCantidad();
+		if(gastos.add(newGasto)) {			
 			AppControlGastos.getRepoGastos().updateGastos(this);
 			return Optional.of(newGasto);
 		}		
@@ -84,9 +82,6 @@ public class Categoria {
 		if(!cargado) {recuperarEstado();}
 		
 		if(gastos.add(newGasto)) {
-			boolean esGastoPropio = usuario.equals(AppControlGastos.getInstancia().getUsuarioActual());
-			if(esGastoPropio) 
-				gastoTotal += newGasto.getCantidad();
 			AppControlGastos.getRepoGastos().updateGastos(this);
 			return Optional.of(newGasto);
 		}		
@@ -117,59 +112,11 @@ public class Categoria {
 		return gastos.isEmpty();
 	}
 	
-	
-	/**
-	 * Retorna un objeto set con los gastos realizados entre el periodo de tiempo f1 y f2.
-	 * @param f1 fecha inferior del periodo. Debe ser menor o igual a f2 .
-	 * @param f2 fecha superior del periodo. Debe ser mayor o igual a f1.
-	 * @return un objeto set con los gastos realizados entre el periodo de tiempo f1 y f2.
-	 */
-	public Set<Gasto> getGastosEnPeriodo(LocalDate f1, LocalDate f2){
-		if(!cargado) {recuperarEstado();}
-		return gastos.stream()
-				.filter(g->g.realizadoEntre(f1, f2))
-				.collect(Collectors.toSet());
-	}
-	
-	/**
-	 * Retorna un objeto Set con los gastos que contengan en su concepto la subcadena subconcepto.
-	 * @param subconcepto subcadena que debe contener el Gasto.
-	 * @return un objeto set con los gastos que contengan la subcadena subconcepto.
-	 */
-	public Set<Gasto> getGastosConConcepto(String subconcepto){
-		if(!cargado) {recuperarEstado();}
-		return gastos.stream()
-				.filter(g->g.getConcepto().toLowerCase().contains(subconcepto.toLowerCase()))
-				.collect(Collectors.toSet());
-	}
-	
-	public Set<Gasto> getGastosConCatidad(double li, double ls){
-		if(!cargado) {recuperarEstado();}
-		return gastos.stream()
-				.filter(g->g.isCantidadEntre(li, ls))
-				.collect(Collectors.toSet());
-	}
-	
-	/*
-	 * Retorna Una lista con los últimos n gastos introducidos en esta categoria si los hay.
-	 * La lista puede estar vacía.
-	 * */
-	/*public List<Gasto> getUltimosNGastos(int n){
-		LinkedList<Gasto> list = new LinkedList<>();
-		Iterator<Gasto> it = gastos.descendingIterator();
-		for(int i=0; it.hasNext() && i < gastos.size() && i < n; i++) {
-			list.addLast(it.next());
-		}
-		return list;
-	}*/
-	
+		
 	public boolean eliminarGasto(Gasto e) {
 		if(!cargado) {recuperarEstado();}
 		boolean resultado = gastos.remove(e);
 		if(resultado) {
-			boolean esGastoPropio = e.getUsuario().equals(AppControlGastos.getInstancia().getUsuarioActual());
-			if(esGastoPropio)
-				this.gastoTotal -= e.getCantidad();
 			AppControlGastos.getRepoGastos().updateGastos(this);
 		}
 		return resultado;
@@ -195,9 +142,6 @@ public class Categoria {
 	
 	private void recuperarEstado() {
 		this.gastos.addAll(AppControlGastos.getRepoGastos().getGastos(this));
-		this.gastoTotal = gastos.stream()
-				.filter(g-> g.getUsuario().equals(Directorio.getUsuarioPropietario()))
-				.collect(Collectors.summingDouble(Gasto::getCantidad));
 		this.cargado = true;
 	}
 	

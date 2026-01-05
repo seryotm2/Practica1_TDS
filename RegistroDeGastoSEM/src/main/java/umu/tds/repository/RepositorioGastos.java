@@ -29,7 +29,7 @@ public interface RepositorioGastos {
 	void eliminarGasto(Gasto gasto);
 	
 	/**
-	 * Devuelve todos los gastos del sistema independientemente de la categiría.
+	 * Devuelve todos los gastos del sistema independientemente de la categoría.
 	 * @return Conjunto de gastos
 	 */
 	Set<Gasto> getHistorico();
@@ -63,8 +63,6 @@ public interface RepositorioGastos {
 	 * @param lista Nueva lista a almacenar.
 	 */
 	void updateCuentas(List<CuentaCompartida> lista);
-	
-	public void addGasto(Gasto gasto); //por sergio
 	
 
 }

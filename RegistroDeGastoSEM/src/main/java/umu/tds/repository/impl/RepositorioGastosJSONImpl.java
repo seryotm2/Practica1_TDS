@@ -195,19 +195,6 @@ public class RepositorioGastosJSONImpl implements RepositorioGastos{
 		} catch (Exception e) {e.printStackTrace();}
 	}
 	
-	@Override
-    public void addGasto(Gasto gasto) {
-        historial.add(gasto);
-        Path ficheroHis = Paths.get(HISTORIAL_PATH);
-        try {
-            mapper.writerFor(new TypeReference<Set<Gasto>>() {})
-                  .withDefaultPrettyPrinter()
-                  .writeValue(ficheroHis.toFile(), historial);
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 	
 	private Set<Gasto> resolverUsuarios(Collection<Gasto> gastos) {
 		if(gastos.isEmpty())

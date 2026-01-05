@@ -40,18 +40,6 @@ public class AppControlGastos {
     private Directorio directorio;
     private LibroDeCuenta libroDeCuenta;
     private GestorAlertas gestorAlertas;
-
-    /*
-    private AppControlGastos() {
-        this.directorio = Directorio.getInstancia();
-        this.libroDeCuenta = LibroDeCuenta.getInstancia();
-        this.repoGastos = new RepositorioGastosJSONImpl();
-        this.repositorio = new RepositorioUsuariosJSON();
-        
-        List<CuentaCompartida> cuentasGuardadas = repositorio.getCuentas();
-        libroDeCuenta.setCuentasCompartidas(cuentasGuardadas);
-    }
-    */
     
     private AppControlGastos() {
     	directorio = Directorio.getInstancia();
@@ -81,38 +69,7 @@ public class AppControlGastos {
     public boolean registrarUsuario(String nombre, String email) {
         return directorio.crearUsuario(nombre, email);
     }
-
-
-    /**
-     * Registra un gasto para el usuario principal.
-     * Si la categoría indicada no existe, se crea automáticamente. TODO: CAMBIAR ESTO, LO DEJAREMOS COMO LISTA DESLIZANTE
-     * @param concepto Descripción del gasto.
-     * @param nombreCategoria Nombre de la categoría (ej: "Alimentación").
-     * @param cantidad Importe del gasto.
-     * @param fecha Fecha en la que se realizó.
-     * @return true si el gasto se registró con éxito.
-     */
-    
-    /*
-    public boolean registrarGasto(String concepto, String nombreCategoria, double cantidad, LocalDate fecha) {
-        if (cantidad < 0 || fecha == null) {
-            return false;
-        }
-        Usuario autor = getUsuarioActual();
-        if (nombreCategoria == null || nombreCategoria.isBlank()) {  
-            nombreCategoria = LibroDeCuenta.GASTOS_GENERALES;
-        } else {
-            if (!libroDeCuenta.existeCategoria(nombreCategoria)) {	// TODO mirar si creamos una nueva o lo ponemos como una lista deslizante
-                boolean creada = libroDeCuenta.crearCategoria(nombreCategoria);
-                if (!creada) return false; 
-            }
-        }
-        Optional<Gasto> gasto = libroDeCuenta.crearGasto(cantidad, fecha, autor, concepto, nombreCategoria);
-
-        return gasto.isPresent();
-    }
-    */
-    
+       
     /**
      * Crea una nueva cuenta compartida.
      * @param nombre Nombre de la cuenta.
@@ -127,34 +84,10 @@ public class AppControlGastos {
         CuentaCompartida nuevaCuenta = new CuentaCompartida(nombre, listaCompleta);
         
         libroDeCuenta.addCuentaCompartida(nuevaCuenta);
-       // repoGastos.updateCuentas(libroDeCuenta.getCuentasCompartidas());
         return true;
     }
     
-    /*
-    public boolean registrarGastoCompartido(CuentaCompartida cuenta, String concepto, double cantidad, LocalDate fecha, Usuario pagador) {
-    	 
-        
-        if (!libroDeCuenta.existeCategoria(concepto)) {
-            libroDeCuenta.crearCategoria(concepto);
-        }
-        
-        Optional<Gasto> gastoOpt = libroDeCuenta.crearGasto(cantidad, fecha, pagador, concepto, concepto);
-        
-        if (gastoOpt.isPresent()) {
-            boolean exito = cuenta.addGasto(gastoOpt.get());
-            
-            if (exito) {
-            	repoGastos.updateCuentas(libroDeCuenta.getCuentasCompartidas());
-            }
-            return exito;
-        }
-        
-        return false;
-       
-    }
-    */
-    
+      
     public List<CuentaCompartida> getCuentasCompartidas() {
         return libroDeCuenta.getCuentasCompartidas();
     }
@@ -187,17 +120,7 @@ public class AppControlGastos {
         // Convertimos el Set a List para que sea fácil de usar en la vista
         return new ArrayList<>(repoGastos.getHistorico());
     }
-
-    /*
-    public double obtenerGastoTotal() {
-        return repoGastos.getHistorico().stream()
-                .mapToDouble(Gasto::getCantidad)
-                .sum();
-    }
-    */
-    
-    
-    
+  
     
     public boolean importarGastos(String rutaFichero) {
         IImportador importador = FactoriaImportadores.getImportador(rutaFichero);
@@ -215,32 +138,12 @@ public class AppControlGastos {
         return false;
     }
     
-    /*
-    public double obtenerGastoMensual() {
-        LocalDate hoy = LocalDate.now();
-        return repoGastos.getHistorico().stream()
-                .filter(g -> g.getFecha().getMonth() == hoy.getMonth() && 
-                             g.getFecha().getYear() == hoy.getYear())
-                .mapToDouble(Gasto::getCantidad)
-                .sum();
-    }
-
-    public double obtenerGastoSemanal() {
-        LocalDate hoy = LocalDate.now();
-        LocalDate inicioSemana = hoy.with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY));
-        LocalDate finSemana = hoy.with(java.time.temporal.TemporalAdjusters.nextOrSame(java.time.DayOfWeek.SUNDAY));
-
-        return repoGastos.getHistorico().stream()
-                .filter(g -> !g.getFecha().isBefore(inicioSemana) && !g.getFecha().isAfter(finSemana))
-                .mapToDouble(Gasto::getCantidad)
-                .sum();
-    }
-    */
     
     public boolean eliminarGasto(Gasto g) {
     	return libroDeCuenta.eliminarGasto(g);        
     }
 
+    
     public boolean eliminarCuentaCompartida(CuentaCompartida c) {
         if (c == null) return false;
         
@@ -263,15 +166,6 @@ public class AppControlGastos {
     }
     
     
-    
-    
-    
-    
-    
-    
-   
-    
-
     public double obtenerGastoTotal() {
     	return libroDeCuenta.getGastoGlobal();
     }
@@ -285,19 +179,6 @@ public class AppControlGastos {
     }
     
     
-    /* Versión no funcional /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
-    public boolean registrarGasto(String concepto, String categoria, double cantidad, LocalDate fecha) {
-        try {
-            GastoIndividual g = new GastoIndividual(concepto, cantidad, fecha);
-            repoGastos.addGasto(g);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }*/
-    
     public boolean registrarGasto(String concepto, String categoria, double cantidad, LocalDate fecha) {
     	if(!libroDeCuenta.existeCategoria(categoria))
     		return false;
@@ -309,31 +190,11 @@ public class AppControlGastos {
     
     public boolean registrarGastoCompartido(CuentaCompartida cuenta, String concepto, double cantidad, 
                                             LocalDate fecha, Usuario pagador,String categoria, Map<String, Double> porcentajes) {
-       /* try {*/
             if (cuenta == null || pagador == null || porcentajes == null) return false;
             
             Optional<Gasto> g = libroDeCuenta.crearGastoCompartido(cuenta, cantidad, fecha, pagador, concepto, categoria, porcentajes);
             
            return g.isPresent();
-        /*} catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }*/
-    }
-
-    private double calcularMiParte(Gasto g) {
-        Usuario yo = getUsuarioActual();
-        if (yo == null) return 0.0;
-
-        if (g instanceof GastoIndividual) {
-            return g.getCantidad();
-        } else if (g instanceof GastoCompartido) {
-            GastoCompartido gc = (GastoCompartido) g;
-            double miPorcentaje = gc.getPorcentajeDe(yo);
-            
-            return gc.getCantidad() * (miPorcentaje / 100.0); 
-        }
-        return 0.0;
     }
     
     public Set<String> getNombresCategorias(){

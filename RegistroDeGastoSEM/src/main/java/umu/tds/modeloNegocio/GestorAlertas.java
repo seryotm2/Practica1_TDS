@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import umu.tds.modeloNegocio.AlertasEstrategia.AlertaMensual;
 import umu.tds.modeloNegocio.AlertasEstrategia.AlertaSemanal;
-import umu.tds.modeloNegocio.AlertasEstrategia.EstrategiaAlerta;
 import umu.tds.modeloNegocio.AlertasEstrategia.ObservadorGasto;
 import umu.tds.repository.RepositorioAlertas;
 
@@ -26,14 +25,6 @@ public class GestorAlertas implements ObservadorGasto{
         umu.tds.modeloNegocio.LibroDeCuenta.getInstancia().agregarObservador(this);
     }
     
-    /*
-    static public GestorAlertas getInstancia(RepositorioAlertas rA) {
-		if(instancia == null) {
-			instancia = new GestorAlertas(rA);
-		}
-		return instancia;
-	}
-	*/
     
     public static GestorAlertas getInstancia() {
         if (instancia == null) {
@@ -89,22 +80,6 @@ public class GestorAlertas implements ObservadorGasto{
         repositorio.borrarNotificacion(alerta);
     }
 	
-	
-	/*
-	public void notificar() {
-        List<Alerta> alertas = repositorio.getAlertas();
-        
-        List<Alerta> notificacionesExistentes = repositorio.getNotificaciones();
-
-        alertas.stream()
-            .filter(alerta -> alerta.evaluar()) 
-            .filter(alerta -> !notificacionesExistentes.contains(alerta)) 
-            .forEach(alerta -> {
-                alerta.setDisparada(true); 
-                repositorio.agregarNotificacion(alerta);
-            });
-    }
-    */
 	
 	@Override
     public void notificar() {
