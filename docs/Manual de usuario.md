@@ -6,7 +6,7 @@ Esta aplicación permite seguir los gastos realizados en ciertos periodos de tie
 ## 2. Acceso a la aplicación
 Para abrir la aplicación se debe ejecutar la siguiente linea en una terminal.
 
-java -jar RGSEM.jar
+./RGSEM.exe
 
 Se abrirá el menú principal, que deberia verse así:
 ![AñadirGasto](https://github.com/seryotm2/Practica1_TDS/blob/main/docs/imagenes/MenuPrincipal.png)
