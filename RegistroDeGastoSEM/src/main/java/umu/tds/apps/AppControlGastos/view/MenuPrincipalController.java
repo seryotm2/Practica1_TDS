@@ -129,11 +129,6 @@ public class MenuPrincipalController {
     }
 
     @FXML
-    public void abrirAyuda(ActionEvent event) {
-        cambiarEscena(event, "/umu/tds/view/ayuda.fxml");
-    }
-
-    @FXML
     public void abrirCreditos(ActionEvent event) {
         cambiarEscena(event, "/umu/tds/view/creditos.fxml");
     }
