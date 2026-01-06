@@ -1,7 +1,5 @@
 # Practica1_TDS - Documentación
 
-## Introduccion
-
 ## Arquitectura de la aplicación, decisiones de diseño y patrones de diseño usados.
 
 ### Vista y controlador principal
@@ -21,6 +19,9 @@ La clase gestorAlertas se encarga de controlar las alertas y las notificaciones 
 
 ## Diagrama de clases del dominio del proyecto.
 
+![DiagramaClases](https://github.com/seryotm2/Practica1_TDS/blob/main/docs/imagenes/DiagramaDeClases.jpeg)
+
+
 ## Diagrama de interacción para la historia de usuario 1.
 
 ### Registro de usuarios  
@@ -31,4 +32,4 @@ La clase gestorAlertas se encarga de controlar las alertas y las notificaciones 
 **Criterio de aceptación:**
 La aplicación permite registrar personas por nombre y correo (opcional) y añadirlas a la lista de contribuyentes. La aplicación muestra un mensaje de registro exitoso.
 
-![Diagrama](https://github.com/seryotm2/Practica1_TDS/blob/main/docs/imagenes/Diagrama%20de%20interaccion.png)
+![DiagramaInteraccion](https://github.com/seryotm2/Practica1_TDS/blob/main/docs/imagenes/Diagrama%20de%20interaccion.png)
