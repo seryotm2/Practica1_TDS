@@ -5,6 +5,7 @@ Esta aplicación permite seguir los gastos realizados en ciertos periodos de tie
 
 ## 2. Acceso a la aplicación
 Para abrir la aplicación se debe ejecutar la siguiente linea en una terminal.
+
 java -jar RGSEM.jar
 
 Se abrirá el menú principal, que deberia verse así:
