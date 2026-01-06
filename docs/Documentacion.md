@@ -12,7 +12,7 @@ Además existen 3 repositorios para los usuarios, los diferentes tipos de gastos
 Para la gestion y clasificación de gastos, gestion y busqueda de categorias y alamcenamiento de cuentas compartidas, decidimos crear una clase llamada Libro de Cuentas (Siendo esta clase Singleton). Esta clase tiene acceso a un repositorio para el almacenamiento persistente de los datos que maneja. Las categorias son listas de gastos y los gastos tienen una referencia a su lista perteneciente. Las cuentas compartidas no son definidas con un porcentaje de reparto del gasto fijo, sino que cada gasto compartido define su propio porcentaje. Las búsquedas de categorias fueron implementadas con un patron decorador para facilitar las busquedas con criterios variables.
 
 ### Usuarios
-La clase Directorio gestiona usuarios y tiene acceso al repositorio de usuarios. Es una clase singleton.
+La clase Directorio gestiona usuarios y tiene acceso al repositorio de usuarios. Es una clase Singleton.
 
 ### Alertas
 La clase gestorAlertas se encarga de controlar las alertas y las notificaciones generadas por las mismas, ademas del acceso a su correspondiente repositorio. Esta clase utiliza el patron Singleton también. Las notificaciones se activan cuando un gasto notifica por patron observer al gestor de alertas. Las alertas se diferencian en semanales y mensuales mediante un patron Estrategia.
