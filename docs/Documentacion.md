@@ -1,7 +1,8 @@
 # Practica1_TDS
 
 1. Diagrama de clases del dominio del proyecto.
-3. Un diagrama de interacción para la una de las historias de usuario (a elección del grupo)  
+3. Un diagrama de interacción para la una de las historias de usuario (a elección del grupo)
+
 Historia de usuario 1. Registro de usuarios  
 **Como** usuario  
 **Quiero** crear diferentes usuarios  
