@@ -4,12 +4,12 @@
 Esta aplicación permite seguir los gastos realizados en ciertos periodos de tiempo, repartirlos entre grupos de usuarios, y alertar al usuario si ha gastado más de lo establecido. Permite crear gastos, clasificarlos en categorias, crear grupos de usuarios, alertas, importar ficheros de gastos y ver el registro de todos estos datos en gráficos.
 
 ## 2. Acceso a la aplicación
-Para abrir la aplicación se debe ejecutar la siguiente linea en una terminal.
+Ejecute eclipse y abra el proyecto. Desde la clase **Main.java** pulse el botón verde de play en la parte superior izquierda para ejecutar el programa.
 
-./RGSEM.exe
+![Ejecutar](https://github.com/seryotm2/Practica1_TDS/blob/main/docs/imagenes/Ejecutar.png)
 
 Se abrirá el menú principal, que deberia verse así:
-![AñadirGasto](https://github.com/seryotm2/Practica1_TDS/blob/main/docs/imagenes/MenuPrincipal.png)
+![MenuPrincipal](https://github.com/seryotm2/Practica1_TDS/blob/main/docs/imagenes/MenuPrincipal.png)
 
 
 ## 3. Funcionalidades principales
