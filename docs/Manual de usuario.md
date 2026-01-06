@@ -82,4 +82,3 @@ Además con el botón **ver Deudas de Grupo** podemos ver grupo por grupo el est
 ### 10. Adicionales
 - Actualizar Lista: Actualiza la lista a los nuevos cambios si no se ha actualizado previamente.
 - Filtrar: Permite filtrar el historial de movimientos por rango de fechas, cantidad, categoria y/o concepto.
-- Ayuda: Muestra una copia de este manual
