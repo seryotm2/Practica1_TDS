@@ -6,7 +6,7 @@ Esta aplicación permite seguir los gastos realizados en ciertos periodos de tie
 ## 2. Acceso a la aplicación
 Ejecute eclipse y abra el proyecto. Desde la clase **Main.java** pulse el botón verde de play en la parte superior izquierda para ejecutar el programa.
 
-![Ejecutar](https://github.com/seryotm2/Practica1_TDS/blob/main/docs/imagenes/Ejecutar.png)
+![Ejecutar]()
 
 Se abrirá el menú principal, que deberia verse así:
 ![MenuPrincipal](https://github.com/seryotm2/Practica1_TDS/blob/main/docs/imagenes/MenuPrincipal.png)
