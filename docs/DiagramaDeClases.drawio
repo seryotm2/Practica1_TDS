@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 OPR/125.0.0.0 (Edition std-2)" version="29.2.9">
   <diagram name="Página-1" id="IHXgOWi08ZdkFbCLDmBs">
-    <mxGraphModel dx="2722" dy="2058" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" background="#ffffff" math="0" shadow="0">
+    <mxGraphModel dx="835" dy="1036" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" background="#ffffff" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -587,13 +587,14 @@
         <mxCell id="vScI-4FWZ1tkOdbmfRqK-46" parent="vScI-4FWZ1tkOdbmfRqK-44" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ mostrarHistorial" vertex="1">
           <mxGeometry height="26" width="140" y="52" as="geometry" />
         </mxCell>
-        <mxCell id="vScI-4FWZ1tkOdbmfRqK-56" edge="1" parent="1" source="xB2_MgGJ2IZo5Z8G-drk-53" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.808;entryY=0.891;entryDx=0;entryDy=0;entryPerimeter=0;" target="vScI-4FWZ1tkOdbmfRqK-44">
+        <mxCell id="vScI-4FWZ1tkOdbmfRqK-56" edge="1" parent="1" source="xB2_MgGJ2IZo5Z8G-drk-53" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="500" y="16" />
-              <mxPoint x="500" y="-4" />
+              <mxPoint x="535" y="16" />
+              <mxPoint x="535" y="-4" />
               <mxPoint x="495" y="-4" />
             </Array>
+            <mxPoint x="495" y="-22" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="vScI-4FWZ1tkOdbmfRqK-69" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="IobservadorGasto" vertex="1">
